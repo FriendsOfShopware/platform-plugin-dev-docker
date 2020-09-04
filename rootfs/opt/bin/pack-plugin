@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -eu
+
+shopware_root_dir=${SHOPWARE_ROOT:-/opt/shopware}
+plugin_name="${1}"
+
+php "${shopware_root_dir}/bin/console" plugin:refresh
+php "${shopware_root_dir}/bin/console" plugin:install --activate --clearCache "${plugin_name}"
+"${shopware_root_dir}/bin/build-js.sh"
+plugin-uploader ext:zip --strategy=plain -- "${shopware_root_dir}/custom/plugins/$plugin_name"

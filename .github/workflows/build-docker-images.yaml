@@ -1,0 +1,51 @@
+name: Build Docker images
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  DOCKER_REPOSITORY: aragon999/shopware-plugin-dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shopware-version: ['6.2', '6.3']
+
+    steps:
+      - name: Clone
+        uses: actions/checkout@v2
+
+      - name: Build docker image
+        uses: docker/build-push-action@v1
+        with:
+          repository: ${{ env.DOCKER_REPOSITORY }}
+          build_args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
+          tags: ${{ matrix.shopware-version }}
+          push: false
+
+      - name: Check for secrets
+        id: check-secrets
+        run: |
+          if [ "${{ secrets.DOCKER_USERNAME }}" != "" ] && [ "${{ secrets.DOCKER_PASSWORD }}" != "" ]
+          then
+            echo ::set-output name=secrets::'true'
+          else
+            echo "No Docker credentials found, skipping push."
+          fi
+
+      - name: Push docker image
+        uses: docker/build-push-action@v1
+        if: ${{ steps.check-secrets.outputs.secrets }}
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.DOCKER_REPOSITORY }}
+          build_args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
+          tags: ${{ matrix.shopware-version }}
+          push: true
