@@ -15,18 +15,36 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shopware-version: ['6.2', '6.3']
+        shopware-version: ['6.2', '6.3', 'v6.3.0.2', 'v6.3.1.0']
 
     steps:
       - name: Clone
         uses: actions/checkout@v2
+
+      - name: Get Tags
+        id: get-docker-tags
+        run: |
+          if [[ "${{ matrix.shopware-version }}" = ^v.* ]]; then
+            shopware_version_tag=$(echo "${{ matrix.shopware-version }}" | grep -m1 -E '(v[0-9]+\.[0-9]+\.[0-9]+)' -o)
+          else
+            shopware_version_tag="${{ matrix.shopware-version }}"
+          fi
+
+          [ "${shopware_version_tag}" == "" ] && exit 1
+
+          tags="${shopware_version_tag}"
+          echo "Shopware version ${{ matrix.shopware-version }}"
+          echo "Image Tags: ${tags}"
+
+          echo "::set-env name=SHOPWARE_VERSION_TAG::${shopware_version_tag}"
+          echo "::set-output name=tags::${tags}"
 
       - name: Build docker image
         uses: docker/build-push-action@v1
         with:
           repository: ${{ env.DOCKER_REPOSITORY }}
           build_args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
-          tags: ${{ matrix.shopware-version }}
+          tags: ${{ steps.get-docker-tags.outputs.tags }}
           push: false
 
       - name: Check for secrets
@@ -47,5 +65,5 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ env.DOCKER_REPOSITORY }}
           build_args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
-          tags: ${{ matrix.shopware-version }}
+          tags: ${{ steps.get-docker-tags.outputs.tags }}
           push: true
