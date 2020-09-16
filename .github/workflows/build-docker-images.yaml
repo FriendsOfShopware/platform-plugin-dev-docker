@@ -24,7 +24,7 @@ jobs:
       - name: Get Tags
         id: get-docker-tags
         run: |
-          if [[ "${{ matrix.shopware-version }}" = ^v.* ]]; then
+          if [[ "${{ matrix.shopware-version }}" =~ ^v.* ]]; then
             shopware_version_tag=$(echo "${{ matrix.shopware-version }}" | grep -m1 -E '(v[0-9]+\.[0-9]+\.[0-9]+)' -o)
           else
             shopware_version_tag="${{ matrix.shopware-version }}"
