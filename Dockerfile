@@ -1,6 +1,7 @@
 FROM php:7.4-cli-alpine
 
 ARG SHOPWARE_VERSION=dev-master
+ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
 ARG PLUGIN_UPLOADER_VERSION=0.3.2
 
 COPY --from=composer:2.0 /usr/bin/composer /usr/bin/composer
@@ -29,7 +30,7 @@ RUN \
     mysql -e "CREATE DATABASE shopware" && \
     mysqladmin --user=root password 'root' && \
     mkdir -p /opt/shopware && \
-    git clone -b ${SHOPWARE_VERSION} --depth 1 https://github.com/friendsofshopware/production "${SHOPWARE_BUILD_DIR}" && \
+    git clone -b ${SHOPWARE_VERSION} --depth 1 "${TEMPLATE_REPOSITORY}" "${SHOPWARE_BUILD_DIR}" && \
     cd "${SHOPWARE_BUILD_DIR}" && \
         composer install --no-interaction -o && \
         php bin/console system:setup --database-url=mysql://root:root@localhost:3306/shopware --generate-jwt-keys -nq && \
