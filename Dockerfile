@@ -42,3 +42,4 @@ RUN \
     chmod +x /opt/bin/plugin-uploader
 
 VOLUME /plugins
+WORKDIR /opt/shopware
