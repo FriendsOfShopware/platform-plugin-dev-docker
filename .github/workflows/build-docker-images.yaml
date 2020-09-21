@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-  DOCKER_REPOSITORY: aragon999/shopware-plugin-dev
+  DOCKER_REPOSITORY: ghcr.io/FriendsOfShopware/platform-plugin-dev
 
 jobs:
   build:
@@ -66,4 +66,13 @@ jobs:
           repository: ${{ env.DOCKER_REPOSITORY }}
           build_args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
           tags: ${{ steps.get-docker-tags.outputs.tags }}
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
+          labels: |
+            org.opencontainers.image.title=${{ github.event.repository.name }}
+            org.opencontainers.image.description=${{ github.event.repository.description }}
+            org.opencontainers.image.url=${{ github.event.repository.html_url }}
+            org.opencontainers.image.source=${{ github.event.repository.clone_url }}
+            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
+            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}

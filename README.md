@@ -7,7 +7,7 @@ A docker image with preinstalled Shopware 6, without a webserver, but including 
 ```
 build:pack-plugin:
   image:
-    name: aragon999/shopware-plugin-dev:6.3
+    name: ghcr.io/FriendsOfShopware/platform-plugin-dev:6.3
     entrypoint: [""]
   script:
     - start-mysql
