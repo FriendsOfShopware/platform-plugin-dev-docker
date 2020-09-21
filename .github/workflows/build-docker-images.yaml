@@ -32,7 +32,7 @@ jobs:
 
           [ "${shopware_version_tag}" == "" ] && exit 1
 
-          tags="${DOCKER_REPOSITORY}:${shopware_version_tag}"
+          tags="${shopware_version_tag}"
           echo "Shopware version ${{ matrix.shopware-version }}"
           echo "Image Tags: ${tags}"
 
@@ -42,6 +42,7 @@ jobs:
       - name: Build docker image
         uses: docker/build-push-action@v1
         with:
+          repository: ${{ env.DOCKER_REPOSITORY }}
           build_args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
           tags: ${{ steps.get-docker-tags.outputs.tags }}
           push: false
@@ -67,6 +68,7 @@ jobs:
         uses: docker/build-push-action@v1
         if: ${{ steps.check-secrets.outputs.secrets }}
         with:
+          repository: ${{ env.DOCKER_REPOSITORY }}
           build_args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
           tags: ${{ steps.get-docker-tags.outputs.tags }}
           push: ${{ github.event_name != 'pull_request' }}
