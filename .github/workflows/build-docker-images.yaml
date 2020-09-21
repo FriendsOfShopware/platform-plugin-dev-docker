@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-  DOCKER_REPOSITORY: ghcr.io/FriendsOfShopware/platform-plugin-dev
+  DOCKER_REPOSITORY: ghcr.io/friendsofshopware/platform-plugin-dev
 
 jobs:
   build:
