@@ -2,8 +2,6 @@ name: Build Docker images
 
 on:
   push:
-    branches:
-      - master
 
 env:
   DOCKER_REPOSITORY: ghcr.io/friendsofshopware/platform-plugin-dev
@@ -65,6 +63,11 @@ jobs:
 
           if [ "${{ github.event_name == 'pull_request' }}" == "true" ]; then
             echo "Pull request, skipping push."
+            exit 0
+          fi
+
+          if [ "${{ github.ref }}" != "refs/heads/master" ]; then
+            echo "Not on master branch, skipping push."
             exit 0
           fi
 
