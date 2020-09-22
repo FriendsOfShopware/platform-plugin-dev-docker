@@ -10,6 +10,23 @@ v6.3.0
 v6.3.1
 ```
 
+# Available scripts and commands
+
+Inside the Docker container you can use the following commands
+
+## `plugin-uploader`
+
+For more information see the [offical documentation](https://github.com/FriendsOfShopware/FroshPluginUploader#using-the-commands) of the plugin uploader.
+
+## `start-mysql`
+
+Simple script which will start the mysql server and return `0` if it was successfully started.
+
+## `pack-plugin <plugin name>`
+
+This command will install the plugin with `<plugin name>` and compile all JavaScript files needed for the storefront and the administration.
+If the environment variable `SHOPWARE_ROOT` is set, this will be used as alternative Shopware location, otherwise if this variable is empty, the default Shopware setup from this image `/opt/hopware` will be used.
+
 # Examples
 ## Pack Plugin in .gitlab-ci.yml
 ```
