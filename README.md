@@ -27,6 +27,21 @@ Simple script which will start the mysql server and return `0` if it was success
 This command will install the plugin with `<plugin name>` and compile all JavaScript files needed for the storefront and the administration.
 If the environment variable `SHOPWARE_ROOT` is set, this will be used as alternative Shopware location, otherwise if this variable is empty, the default Shopware setup from this image `/opt/hopware` will be used.
 
+# Build Docker image for specific Shopware version
+
+It is possible to specify the Shopware version or even the template with the Docker option `--build-arg`, e.g.:
+```
+docker build --build-arg SHOPWARE_VERSION=6.3 . -t platform-plugin-dev:6.3
+```
+
+In the same way it is also possible to specify the template Git repository URL:
+```
+docker build --build-arg SHOPWARE_VERSION=6.3 \
+    --build-arg TEMPLATE_REPOSITORY='https://github.com/FriendsOfShopware/production' \
+    . -t platform-plugin-dev:6.3
+```
+
+
 # Examples
 ## Pack Plugin in .gitlab-ci.yml
 ```
