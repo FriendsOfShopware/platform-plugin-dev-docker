@@ -5,6 +5,7 @@ on:
 
 env:
   DOCKER_REPOSITORY: ghcr.io/friendsofshopware/platform-plugin-dev
+  CACHE_KEY: 2020-09-22
 
 jobs:
   build:
@@ -37,12 +38,25 @@ jobs:
           echo "::set-env name=SHOPWARE_VERSION_TAG::${shopware_version_tag}"
           echo "::set-output name=tag::${tag}"
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ env.CACHE_KEY }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ env.CACHE_KEY }}-
+
       - name: Build docker image
         uses: docker/build-push-action@v2
         with:
           build-args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
           tags: ${{ steps.get-docker-tag.outputs.tag }}
           push: false
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}
