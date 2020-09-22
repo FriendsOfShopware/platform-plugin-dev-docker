@@ -43,7 +43,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           repository: ${{ env.DOCKER_REPOSITORY }}
-          build_args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
+          build-args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
           tags: ${{ steps.get-docker-tag.outputs.tag }}
           push: false
           labels: |
