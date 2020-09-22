@@ -21,8 +21,8 @@ jobs:
       - name: Clone
         uses: actions/checkout@v2
 
-      - name: Get Tags
-        id: get-docker-tags
+      - name: Get Tag
+        id: get-docker-tag
         run: |
           if [[ "${{ matrix.shopware-version }}" =~ ^v.* ]]; then
             shopware_version_tag=$(echo "${{ matrix.shopware-version }}" | grep -m1 -E '(v[0-9]+\.[0-9]+\.[0-9]+)' -o)
@@ -32,19 +32,19 @@ jobs:
 
           [ "${shopware_version_tag}" == "" ] && exit 1
 
-          tags="${shopware_version_tag}"
+          tag="${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}"
           echo "Shopware version ${{ matrix.shopware-version }}"
-          echo "Image Tags: ${tags}"
+          echo "Image Tag: ${tag}"
 
           echo "::set-env name=SHOPWARE_VERSION_TAG::${shopware_version_tag}"
-          echo "::set-output name=tags::${tags}"
+          echo "::set-output name=tag::${tag}"
 
       - name: Build docker image
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
           repository: ${{ env.DOCKER_REPOSITORY }}
           build_args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
-          tags: ${{ steps.get-docker-tags.outputs.tags }}
+          tags: ${{ steps.get-docker-tag.outputs.tag }}
           push: false
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
@@ -82,4 +82,4 @@ jobs:
       - name: Push docker image
         if: ${{ steps.check-push.outputs.push }}
         run: |
-          docker push ${{ env.DOCKER_REPOSITORY }}:${{ steps.get-docker-tags.outputs.tags }}
+          docker push ${{ steps.get-docker-tag.outputs.tag }}
