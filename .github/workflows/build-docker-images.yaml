@@ -45,9 +45,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ env.CACHE_KEY }}-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-${{ env.CACHE_KEY }}-
+            ${{ runner.os }}-buildx-${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}-
 
       - name: Build docker image
         uses: docker/build-push-action@v2
