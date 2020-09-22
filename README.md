@@ -1,6 +1,14 @@
 # What is this?
 
-A docker image with preinstalled Shopware 6, without a webserver, but including some helper tools. These images are meant to be useful for debugging Shopware plugins or running plugin tasks in CI
+A docker image with preinstalled Shopware 6, without a webserver, but including some helper tools. These images are meant to be useful for debugging Shopware plugins or running plugin tasks in CI with different Shopware versions.
+
+# Available Docker image tags
+
+We provide a tag for each [minor Shopware 6 release](https://www.shopware.com/en/news/shopware-6-versioning-strategy/), which should always point to the latest patch release, e.g:
+```
+v6.3.0
+v6.3.1
+```
 
 # Examples
 ## Pack Plugin in .gitlab-ci.yml
