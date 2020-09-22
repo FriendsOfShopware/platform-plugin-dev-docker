@@ -42,7 +42,6 @@ jobs:
       - name: Build docker image
         uses: docker/build-push-action@v2
         with:
-          repository: ${{ env.DOCKER_REPOSITORY }}
           build-args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
           tags: ${{ steps.get-docker-tag.outputs.tag }}
           push: false
