@@ -47,7 +47,7 @@ docker build --build-arg SHOPWARE_VERSION=6.3 \
 ```
 build:pack-plugin:
   image:
-    name: ghcr.io/friendsofshopware/platform-plugin-dev:6.3
+    name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.3.1
     entrypoint: [""]
   script:
     - start-mysql
