@@ -35,7 +35,6 @@ jobs:
           echo "Shopware version ${{ matrix.shopware-version }}"
           echo "Image Tag: ${tag}"
 
-          echo "::set-env name=SHOPWARE_VERSION_TAG::${shopware_version_tag}"
           echo "::set-output name=tag::${tag}"
 
       - name: Set up Docker Buildx
