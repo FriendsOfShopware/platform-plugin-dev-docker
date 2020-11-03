@@ -9,6 +9,7 @@ We provide a tag for each [minor Shopware 6 release](https://www.shopware.com/en
 v6.3.0
 v6.3.1
 v6.3.2
+v6.3.3
 ```
 
 # Available scripts and commands
