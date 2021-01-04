@@ -2,7 +2,7 @@ FROM php:7.4-cli-alpine
 
 ARG SHOPWARE_VERSION=dev-master
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
-ARG PLUGIN_UPLOADER_VERSION=0.3.5
+ARG PLUGIN_UPLOADER_VERSION=0.3.8
 
 COPY --from=composer:2.0 /usr/bin/composer /usr/bin/composer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
