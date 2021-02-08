@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shopware-version: ['v6.3.0.2', 'v6.3.1.1', 'v6.3.2.1', 'v6.3.3.1', 'v6.3.4.1']
+        shopware-version: ['v6.3.0.2', 'v6.3.1.1', 'v6.3.2.1', 'v6.3.3.1', 'v6.3.4.1', 'v6.3.5.1']
 
     steps:
       - name: Clone
