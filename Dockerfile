@@ -3,6 +3,7 @@ FROM php:7.4-cli-alpine
 ARG SHOPWARE_VERSION=dev-master
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
 ARG PLUGIN_UPLOADER_VERSION=0.3.9
+ARG PHP_SCOPER_VERSION=0.14.0
 
 COPY --from=composer:2.0 /usr/bin/composer /usr/bin/composer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
@@ -39,7 +40,8 @@ RUN \
         rm -rf "${SHOPWARE_BUILD_DIR}/custom/plugins" && \
         mkdir -p /plugins && ln -s /plugins "${SHOPWARE_BUILD_DIR}/custom/plugins" && \
     wget https://github.com/FriendsOfShopware/FroshPluginUploader/releases/download/${PLUGIN_UPLOADER_VERSION}/frosh-plugin-upload.phar -O /opt/bin/plugin-uploader && \
-    chmod +x /opt/bin/plugin-uploader
+    wget https://github.com/humbug/php-scoper/releases/download/${PHP_SCOPER_VERSION}/php-scoper.phar -O /opt/bin/php-scoper && \
+    chmod +x /opt/bin/plugin-uploader /opt/bin/php-scoper
 
 VOLUME /plugins
 WORKDIR /opt/shopware
