@@ -8,4 +8,6 @@ plugin_name="${1}"
 php "${shopware_root_dir}/bin/console" plugin:refresh
 php "${shopware_root_dir}/bin/console" plugin:install --activate --clearCache "${plugin_name}"
 "${shopware_root_dir}/bin/build-js.sh"
+rm -rf "${shopware_root_dir}/custom/plugins/$plugin_name/src/Resources/app/administration/node_modules"
+rm -rf "${shopware_root_dir}/custom/plugins/$plugin_name/src/Resources/app/storefront/node_modules"
 plugin-uploader ext:zip --strategy=plain -- "${shopware_root_dir}/custom/plugins/$plugin_name"
