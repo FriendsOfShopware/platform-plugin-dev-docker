@@ -5,7 +5,7 @@ on:
 
 env:
   DOCKER_REPOSITORY: ghcr.io/friendsofshopware/platform-plugin-dev
-  CACHE_KEY: 2020-09-22
+  CACHE_KEY: "2020-09-22"
 
 jobs:
   build:
@@ -14,16 +14,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shopware-version:
-            - v6.3.0.2
-            - v6.3.1.1
-            - v6.3.2.1
-            - v6.3.3.1
-            - v6.3.4.1
-            - v6.3.5.4
-            - v6.4.0.0
-            - 6.3
-            - 6.4
+        include:
+          - shopware-version: v6.3.0.2
+            php-version: "7.4"
+          - shopware-version: v6.3.1.1
+            php-version: "7.4"
+          - shopware-version: v6.3.2.1
+            php-version: "7.4"
+          - shopware-version: v6.3.3.1
+            php-version: "7.4"
+          - shopware-version: v6.3.4.1
+            php-version: "7.4"
+          - shopware-version: v6.3.5.4
+            php-version: "7.4"
+          - shopware-version: v6.4.0.0
+            php-version: "8.0"
+          - shopware-version: 6.3
+            php-version: "7.4"
+          - shopware-version: 6.4
+            php-version: "8.0"
 
     steps:
       - name: Clone
@@ -60,7 +69,7 @@ jobs:
       - name: Build docker image
         uses: docker/build-push-action@v2
         with:
-          build-args: SHOPWARE_VERSION=${{ matrix.shopware-version }}
+          build-args: SHOPWARE_VERSION=${{ matrix.shopware-version }} PHP_VERSION=${{ matrix.php-version }}
           tags: ${{ steps.get-docker-tag.outputs.tag }}
           push: false
           load: true
