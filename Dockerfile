@@ -1,4 +1,5 @@
-FROM php:7.4-cli-alpine
+ARG PHP_VERSION=7.4
+FROM php:${PHP_VERSION}-cli-alpine
 
 ARG SHOPWARE_VERSION=dev-master
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
