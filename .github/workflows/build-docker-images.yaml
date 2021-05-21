@@ -33,7 +33,7 @@ jobs:
           - shopware-version: 6.3
             php-version: "7.4"
           - shopware-version: 6.4
-            php-version: "7.4"
+            php-version: "8.0"
 
     steps:
       - name: Clone
