@@ -2,6 +2,7 @@ name: Build Docker images
 
 on:
   push:
+  workflow_dispatch:
 
 env:
   DOCKER_REPOSITORY: ghcr.io/friendsofshopware/platform-plugin-dev
