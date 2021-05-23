@@ -3,6 +3,8 @@ name: Build Docker images
 on:
   push:
   workflow_dispatch:
+  schedule:
+    - cron: '0 1 * * *'
 
 env:
   DOCKER_REPOSITORY: ghcr.io/friendsofshopware/platform-plugin-dev
