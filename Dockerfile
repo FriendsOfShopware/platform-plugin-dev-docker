@@ -3,7 +3,7 @@ FROM php:${PHP_VERSION}-cli-alpine
 
 ARG SHOPWARE_VERSION=dev-master
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
-ARG PLUGIN_UPLOADER_VERSION=0.3.13
+ARG PLUGIN_UPLOADER_VERSION=0.3.14
 ARG PHP_SCOPER_VERSION=0.14.0
 
 COPY --from=composer:2.0 /usr/bin/composer /usr/bin/composer
