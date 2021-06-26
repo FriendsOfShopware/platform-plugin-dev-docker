@@ -1,5 +1,5 @@
 ARG PHP_VERSION=7.4
-FROM php:${PHP_VERSION}-cli-alpine
+FROM php:${PHP_VERSION}-cli-alpine3.13
 
 ARG SHOPWARE_VERSION=dev-master
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
@@ -16,7 +16,7 @@ RUN \
     apk add --no-cache git zip unzip zlib-dev libpng-dev icu-dev libzip-dev bash \
         mysql mysql-client npm python3 make g++ && \
     echo 'alias ll="ls -lha"' >> ~/.bashrc && \
-    install-php-extensions gd intl pdo_mysql zip
+    install-php-extensions gd intl pdo_mysql zip xsl
 
 RUN \
     mysql_install_db --datadir=/var/lib/mysql --user=mysql && \
