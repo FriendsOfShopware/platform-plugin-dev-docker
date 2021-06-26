@@ -16,13 +16,14 @@ RUN \
     apk add --no-cache git zip unzip zlib-dev libpng-dev icu-dev libzip-dev bash \
         mysql mysql-client npm python3 make g++ && \
     echo 'alias ll="ls -lha"' >> ~/.bashrc && \
-    install-php-extensions gd intl pdo_mysql zip xsl
+    install-php-extensions gd intl pdo_mysql zip xsl pcov
 
 RUN \
     mysql_install_db --datadir=/var/lib/mysql --user=mysql && \
     echo "pdo_mysql.default_socket=/run/mysqld/mysqld.sock" > /usr/local/etc/php/conf.d/pdo_mysql.ini && \
     echo "mysqli.default_socket=/run/mysqld/mysqld.sock" > /usr/local/etc/php/conf.d/mysqli.ini && \
     echo "memory_limit=1G" > /usr/local/etc/php/conf.d/memory.ini && \
+    echo "pcov.enabled = 0" > /usr/local/etc/php/conf.d/pcov.ini && \
     mkdir /run/mysqld/ && chown -R mysql:mysql /run/mysqld/
 
 ENV SHOPWARE_BUILD_DIR /opt/shopware
