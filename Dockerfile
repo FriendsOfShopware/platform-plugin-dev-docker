@@ -13,7 +13,7 @@ COPY rootfs/ /
 ENV PATH="/opt/bin:/opt/shopware/bin:${PATH}"
 
 RUN \
-    apk add --no-cache git zip unzip zlib-dev libpng-dev icu-dev libzip-dev bash \
+    apk add --no-cache git zip unzip zlib-dev libpng-dev icu-dev libzip-dev bash jq \
         mysql mysql-client npm python3 make g++ && \
     echo 'alias ll="ls -lha"' >> ~/.bashrc && \
     install-php-extensions gd intl pdo_mysql zip xsl pcov
