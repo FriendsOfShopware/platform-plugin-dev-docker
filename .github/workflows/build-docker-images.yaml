@@ -129,8 +129,8 @@ jobs:
         if: ${{ steps.check-push.outputs.push }}
         with:
           registry: ghcr.io
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push docker image
         if: ${{ steps.check-push.outputs.push }}
