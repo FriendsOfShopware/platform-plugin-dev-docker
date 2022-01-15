@@ -7,6 +7,6 @@ app_name="${1}"
 
 php "${shopware_root_dir}/bin/console" app:install --activate "${app_name}"
 php "${shopware_root_dir}/bin/console" cache:clear
-"${shopware_root_dir}/bin/build-js.sh"
+"${shopware_root_dir}/bin/build-storefront.sh"
 rm -rf "${shopware_root_dir}/custom/apps/${app_name}/Resources/app/storefront/node_modules"
 plugin-uploader ext:zip --strategy=plain -- "${shopware_root_dir}/custom/apps/${app_name}"
