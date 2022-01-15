@@ -39,7 +39,7 @@ RUN \
         APP_URL="http://localhost" php bin/console system:setup --database-url=mysql://root:root@localhost:3306/shopware --generate-jwt-keys -nq && \
         php bin/console system:install -fnq --create-database && \
         composer clearcache && \
-        rm -rf "${SHOPWARE_BUILD_DIR}/custom/{plugins,apps}" && \
+        rm -rf "${SHOPWARE_BUILD_DIR}/custom/"{plugins,apps} && \
         mkdir -p /plugins && ln -s /plugins "${SHOPWARE_BUILD_DIR}/custom/plugins" && \
         mkdir -p /apps && ln -s /apps "${SHOPWARE_BUILD_DIR}/custom/apps" && \
     wget https://github.com/FriendsOfShopware/FroshPluginUploader/releases/download/${PLUGIN_UPLOADER_VERSION}/frosh-plugin-upload.phar -O /opt/bin/plugin-uploader && \
