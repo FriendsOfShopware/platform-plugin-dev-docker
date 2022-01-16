@@ -27,7 +27,16 @@ Simple script which will start the mysql server and return `0` if it was success
 ## `pack-plugin <plugin name>`
 
 This command will install the plugin with `<plugin name>` and compile all JavaScript files needed for the storefront and the administration.
-If the environment variable `SHOPWARE_ROOT` is set, this will be used as alternative Shopware location, otherwise if this variable is empty, the default Shopware setup from this image `/opt/hopware` will be used.
+If the environment variable `SHOPWARE_ROOT` is set, this will be used as alternative Shopware location, otherwise if this variable is empty, the default Shopware setup from this image `/opt/shopware` will be used.
+
+Make sure that the plugin folder is present in `${SHOPWARE_ROOT}/custom/plugins/`. If you use the default `SHOPWARE_ROOT` you can place them in `/plugins`.
+
+## `pack-app <app name>`
+
+This command will install the app with `<app name>` and compile all JavaScript files needed for the storefront.
+If the environment variable `SHOPWARE_ROOT` is set, this will be used as alternative Shopware location, otherwise if this variable is empty, the default Shopware setup from this image `/opt/shopware` will be used.
+
+Make sure that the app folder is present in `${SHOPWARE_ROOT}/custom/apps/`. If you use the default `SHOPWARE_ROOT` you can place them in `/apps`.
 
 # Build Docker image for specific Shopware version
 
@@ -56,6 +65,24 @@ build:pack-plugin:
     - ln -s "$(pwd)" "/plugins/${CI_PROJECT_NAME}"
     - pack-plugin "${CI_PROJECT_NAME}"
     - plugin-uploader ext:validate "$(realpath "${CI_PROJECT_NAME}.zip")"
+  artifacts:
+    paths:
+      - "${CI_PROJECT_NAME}.zip"
+    expire_in: 1 week
+```
+
+## Pack App in .gitlab-ci.yml
+```
+build:pack-app:
+  image:
+    name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.7
+    entrypoint: [""]
+  script:
+    - start-mysql
+    - ln -s "$(pwd)" "/apps/${CI_PROJECT_NAME}"
+    - rm -rf "/apps/${CI_PROJECT_NAME}/store" # Remove the store folder manually since it is not removed in the pack process for apps
+    - pack-app "${CI_PROJECT_NAME}"
+    - plugin-uploader ext:validate "$(realpath "${CI_PROJECT_NAME}.zip")" || true
   artifacts:
     paths:
       - "${CI_PROJECT_NAME}.zip"
