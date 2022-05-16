@@ -52,6 +52,8 @@ jobs:
             php-version: "8.0"
           - shopware-version: v6.4.10.0
             php-version: "8.0"
+          - shopware-version: v6.4.11.1
+            php-version: "8.0"
           - shopware-version: 6.3
             php-version: "7.4"
           - shopware-version: 6.4
