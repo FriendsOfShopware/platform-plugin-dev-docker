@@ -5,10 +5,10 @@ ARG SHOPWARE_VERSION=dev-master
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
 ARG PLUGIN_UPLOADER_VERSION=0.3.16
 ARG PHP_SCOPER_VERSION=0.14.0
-ARG SHOPWARE_CLI_VERSION=0.1.29
 
 COPY --from=composer:2.0 /usr/bin/composer /usr/bin/composer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+COPY --from=ghcr.io/friendsofshopware/shopware-cli:0.1.29 /usr/local/bin/shopware-cli /opt/bin/shopware-cli
 
 COPY rootfs/ /
 ENV PATH="/opt/bin:/opt/shopware/bin:${PATH}"
@@ -44,7 +44,6 @@ RUN \
         mkdir -p /plugins && ln -s /plugins "${SHOPWARE_BUILD_DIR}/custom/plugins" && \
         rm -rf "${SHOPWARE_BUILD_DIR}/custom/apps" && \
         mkdir -p /apps && ln -s /apps "${SHOPWARE_BUILD_DIR}/custom/apps" && \
-    wget https://github.com/FriendsOfShopware/shopware-cli/releases/download/${SHOPWARE_CLI_VERSION}/shopware-cli_${SHOPWARE_CLI_VERSION}_Linux_x86_64.tar.gz -O /opt/bin/shopware-cli && \
     wget https://github.com/FriendsOfShopware/FroshPluginUploader/releases/download/${PLUGIN_UPLOADER_VERSION}/frosh-plugin-upload.phar -O /opt/bin/plugin-uploader && \
     wget https://github.com/humbug/php-scoper/releases/download/${PHP_SCOPER_VERSION}/php-scoper.phar -O /opt/bin/php-scoper && \
     chmod +x /opt/bin/plugin-uploader /opt/bin/php-scoper
