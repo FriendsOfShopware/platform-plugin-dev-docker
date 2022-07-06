@@ -1,3 +1,6 @@
+ARG COMPOSER_VERSION=2
+FROM composer:${COMPOSER_VERSION} as composer-base
+
 ARG PHP_VERSION=7.4
 FROM php:${PHP_VERSION}-cli-alpine3.13
 
@@ -6,9 +9,8 @@ ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
 ARG PLUGIN_UPLOADER_VERSION=0.3.16
 ARG PHP_SCOPER_VERSION=0.14.0
 ARG SHOPWARE_CLI_VERSION=0.1.29
-ARG COMPOSER_VERSION=2
 
-COPY --from=composer:${COMPOSER_VERSION} /usr/bin/composer /usr/bin/composer
+COPY --from=composer-base /usr/bin/composer /usr/bin/composer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
 COPY rootfs/ /
