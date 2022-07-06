@@ -5,7 +5,7 @@ ARG SHOPWARE_VERSION=dev-master
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
 ARG PLUGIN_UPLOADER_VERSION=0.3.16
 ARG PHP_SCOPER_VERSION=0.14.0
-ARG SHOPWARE_CLI_VERSION=0.1.28
+ARG SHOPWARE_CLI_VERSION=0.1.29
 
 COPY --from=composer:2.0 /usr/bin/composer /usr/bin/composer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
