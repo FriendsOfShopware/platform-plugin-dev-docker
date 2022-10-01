@@ -5,8 +5,12 @@ use Shopware\Core\TestBootstrapper;
 $projectDir = $_SERVER['SHOPWARE_BUILD_DIR'];
 if (is_readable($projectDir . '/vendor/shopware/core/TestBootstrapper.php')) {
     require $projectDir . '/vendor/shopware/core/TestBootstrapper.php';
-} elseif (is_readable(__DIR__ . 'TestBootstrapperFallback.php')) {
-    require __DIR__ . 'TestBootstrapperFallback.php';
+} elseif (is_readable(__DIR__ . '/TestBootstrapperFallback.php')) {
+    // For old Shopware versions which do not have the TestBootstrapper we manually need
+    // to set the kernel class
+    $_SERVER['KERNEL_CLASS'] ??= 'Shopware\Production\Kernel';
+
+    require __DIR__ . '/TestBootstrapperFallback.php';
 }
 
 return (new TestBootstrapper())
