@@ -55,7 +55,7 @@ docker build --build-arg SHOPWARE_VERSION=6.3 \
 
 # Examples
 ## Pack Plugin in .gitlab-ci.yml
-```
+```yaml
 build:pack-plugin:
   image:
     name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.3.1
@@ -72,7 +72,7 @@ build:pack-plugin:
 ```
 
 ## Pack App in .gitlab-ci.yml
-```
+```yaml
 build:pack-app:
   image:
     name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.7
@@ -87,4 +87,79 @@ build:pack-app:
     paths:
       - "${CI_PROJECT_NAME}.zip"
     expire_in: 1 week
+```
+
+## PHPUnit tests
+The docker images contains `phpunit` constrained via the Shopware `composer.json`. Additionally a `TestBootstrapper` is included, either the one from the Shopware repository or a fallback one for Shopware versions `< 6.4.5.0`. This can be utilized inside your plugin (e.g. in `tests/TestBootstrap.php`)
+```php
+<?php declare(strict_types=1);
+
+use Shopware\Core\TestBootstrapper;
+
+$testBootstrapper = null;
+if (is_readable('/opt/share/shopware/tests/TestBootstrapper.php')) {
+    // For Docker image: ghcr.io/friendsofshopware/platform-plugin-dev
+    $testBootstrapper = require '/opt/share/shopware/tests/TestBootstrapper.php';
+} else {
+    // Create your own TestBootstrapper
+}
+
+return $testBootstrapper
+    ->setLoadEnvFile(true)
+    ->setForceInstallPlugins(true)
+    ->addActivePlugins('MyTechnicalPluginName')
+    ->bootstrap()
+    ->getClassLoader()
+;
+```
+
+The associate `phpunit.xml.dist` would than look something like
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         bootstrap="tests/TestBootstrap.php"
+         cacheResult="false">
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </coverage>
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <server name="APP_ENV" value="test" force="true"/>
+        <env name="APP_DEBUG" value="1"/>
+        <env name="APP_SECRET" value="s$cretf0rt3st"/>
+        <env name="SHELL_VERBOSITY" value="-1"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" />
+    </php>
+    <testsuites>
+        <testsuite name="MyTechnicalPluginName">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
+```
+
+Locally execute the tests using the provided docker images, assuming you are currently inside the plugin directory
+```
+docker run --rm -it -v "${PWD}:/plugins/MyTechnicalPluginName" ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.0 sh -c 'start-mysql && cd /plugins/MyTechnicalPluginName && phpunit'
+```
+
+## Run the tests in .gitlab-ci.yml
+```yaml
+test:phpunit:
+  stage: test
+  image:
+    name: ghcr.io/friendsofshopware/platform-plugin-dev:${SHOPWARE_VERSION}
+    entrypoint: [""]
+  script:
+    - start-mysql
+    - ln -s "$(pwd)" "/plugins/${CI_PROJECT_NAME}"
+    - phpunit
+  parallel:
+    matrix:
+      - SHOPWARE_VERSION: ['v6.4.0', 'v6.4.5', 'v6.4.10', 'v6.4.15']
 ```
