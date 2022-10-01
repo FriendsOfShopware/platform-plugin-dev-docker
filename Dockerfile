@@ -47,7 +47,8 @@ RUN \
 RUN \
     wget https://github.com/FriendsOfShopware/FroshPluginUploader/releases/download/${PLUGIN_UPLOADER_VERSION}/frosh-plugin-upload.phar -O /opt/bin/plugin-uploader && \
     wget https://github.com/humbug/php-scoper/releases/download/${PHP_SCOPER_VERSION}/php-scoper.phar -O /opt/bin/php-scoper && \
-    chmod +x /opt/bin/plugin-uploader /opt/bin/php-scoper
+    chmod +x /opt/bin/plugin-uploader /opt/bin/php-scoper && \
+    wget https://raw.githubusercontent.com/shopware/platform/v6.4.5.1/src/Core/TestBootstrapper.php -O /opt/share/shopware/tests/TestBootstrapperFallback.php
 
 VOLUME /plugins
 WORKDIR /opt/shopware
