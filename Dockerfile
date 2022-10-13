@@ -8,11 +8,12 @@ ARG PHP_SCOPER_VERSION=0.14.0
 
 COPY --from=composer:2.0 /usr/bin/composer /usr/bin/composer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
-COPY --from=ghcr.io/friendsofshopware/shopware-cli:0.1.37 /usr/local/bin/shopware-cli /opt/bin/shopware-cli
 
 RUN \
     apk add --no-cache git zip unzip zlib-dev libpng-dev icu-dev libzip-dev bash jq \
         mysql mysql-client npm python3 make g++ && \
+    curl -1sLf 'https://dl.cloudsmith.io/public/friendsofshopware/stable/setup.alpine.sh' | bash && \
+    apk add --no-cache shopware-cli && \
     echo 'alias ll="ls -lha"' >> ~/.bashrc && \
     install-php-extensions gd intl pdo_mysql zip xsl pcov
 
