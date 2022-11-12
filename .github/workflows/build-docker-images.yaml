@@ -32,7 +32,7 @@ jobs:
           build-args: |
             PHP_VERSION=${{ matrix.php-version }}
           tags: "${{ env.DOCKER_REPOSITORY }}-base:${{ matrix.php-version }}"
-          file: {context}/Dockerfile.base
+          file: "{context}/Dockerfile.base"
           push: false
           load: true
           cache-from: type=registry,ref=${{ env.DOCKER_REPOSITORY }}-base:${{ matrix.php-version }}
