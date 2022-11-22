@@ -7,7 +7,7 @@ RUN \
     apk add --no-cache git zip unzip zlib-dev libpng-dev icu-dev libzip-dev bash jq \
         mysql mysql-client npm python3 make g++ && \
     echo 'alias ll="ls -lha"' >> ~/.bashrc && \
-    install-php-extensions gd intl pdo_mysql zip xsl pcov
+    install-php-extensions gd intl pdo_mysql zip xsl pcov redis
 
 RUN \
     mysql_install_db --datadir=/var/lib/mysql --user=mysql && \
