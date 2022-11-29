@@ -4,13 +4,7 @@ A docker image with preinstalled Shopware 6, without a webserver, but including 
 
 # Available Docker image tags
 
-We provide a tag for each [minor Shopware 6 release](https://www.shopware.com/en/news/shopware-6-versioning-strategy/), which should always point to the latest patch release, e.g:
-```
-v6.3.0
-v6.3.1
-v6.3.2
-v6.3.3
-```
+We provide a tag for each [minor Shopware 6 release](https://www.shopware.com/en/news/shopware-6-versioning-strategy/), which should always point to the latest patch release. Additionally there exist a tag for each major branch. A list of available tags can be found [here](https://github.com/FriendsOfShopware/platform-plugin-dev-docker/pkgs/container/platform-plugin-dev/versions?filters%5Bversion_type%5D=tagged).
 
 # Available scripts and commands
 
@@ -61,7 +55,6 @@ build:pack-plugin:
     name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.3.1
     entrypoint: [""]
   script:
-    - start-mysql
     - ln -s "$(pwd)" "/plugins/${CI_PROJECT_NAME}"
     - pack-plugin "${CI_PROJECT_NAME}"
     - plugin-uploader ext:validate "$(realpath "${CI_PROJECT_NAME}.zip")"
