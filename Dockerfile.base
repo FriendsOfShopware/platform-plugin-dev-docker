@@ -29,6 +29,6 @@ RUN \
     wget https://raw.githubusercontent.com/shopware/platform/v6.4.5.1/src/Core/TestBootstrapper.php -O /opt/share/shopware/tests/TestBootstrapperFallback.php
 
 COPY --from=ghcr.io/friendsofshopware/shopware-cli:0.1.37 /usr/local/bin/shopware-cli /opt/bin/shopware-cli
-COPY --from=composer/composer:2-bin /composer /usr/bin/composer
+COPY --from=composer/composer:2.4.4-bin /composer /usr/bin/composer
 
 ENV PATH="/opt/bin:/opt/shopware/bin:${PATH}"
