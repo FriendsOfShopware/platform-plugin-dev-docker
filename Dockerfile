@@ -5,6 +5,7 @@ ARG SHOPWARE_VERSION=dev-master
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
 
 ENV SHOPWARE_BUILD_DIR /opt/shopware
+ENV COMPOSER_ALLOW_SUPERUSER 1
 
 RUN \
   if echo "${SHOPWARE_VERSION}" | grep -q '^v6.4.*'; then \
