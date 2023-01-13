@@ -21,6 +21,7 @@ RUN \
     mkdir -p /opt/shopware && \
     git clone -b ${SHOPWARE_VERSION} --depth 1 "${TEMPLATE_REPOSITORY}" "${SHOPWARE_BUILD_DIR}" && \
     cd "${SHOPWARE_BUILD_DIR}" && \
+        mkdir -p custom/plugins && \
         composer install --no-interaction -o && \
         APP_URL="http://localhost" php bin/console system:setup --database-url=mysql://root:root@localhost:3306/shopware --generate-jwt-keys -nq && \
         php bin/console system:install -fnq --create-database && \
