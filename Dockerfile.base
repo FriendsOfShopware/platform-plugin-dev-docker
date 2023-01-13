@@ -32,3 +32,4 @@ COPY --from=ghcr.io/friendsofshopware/shopware-cli:0.1.37 /usr/local/bin/shopwar
 COPY --from=composer/composer:2.4.4-bin /composer /usr/bin/composer
 
 ENV PATH="/opt/bin:/opt/shopware/bin:${PATH}"
+ENV COMPOSER_ALLOW_SUPERUSER=1
