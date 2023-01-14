@@ -26,14 +26,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ env.CACHE_KEY }}-${{ matrix.php-version }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-${{ env.CACHE_KEY }}-${{ matrix.php-version }}-
-
       - name: Build docker image
         uses: docker/build-push-action@v3
         with:
@@ -43,8 +35,8 @@ jobs:
           file: "Dockerfile.base"
           push: false
           load: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-from: type=gha,scope=${{ github.ref_name }}-${{ env.CACHE_KEY }}-${{ matrix.php-version }}
+          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}-${{ env.CACHE_KEY }}-${{ matrix.php-version }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}
@@ -207,14 +199,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}-
-
       - name: Build docker image
         uses: docker/build-push-action@v3
         with:
@@ -225,8 +209,8 @@ jobs:
           tags: ${{ steps.get-docker-tag.outputs.tag }}
           push: false
           load: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-from: type=gha,scope=${{ github.ref_name }}-${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}
+          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}-${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}
