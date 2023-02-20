@@ -8,7 +8,7 @@ ENV SHOPWARE_BUILD_DIR /opt/shopware
 
 RUN \
   if echo "${SHOPWARE_VERSION}" | grep -q '^v6.4.*'; then \
-      apk add --no-cache --repository="https://dl-cdn.alpinelinux.org/alpine/v3.16/main" 'nodejs=16.17.1-r0' 'npm=8.10.0-r0'; \
+      apk add --no-cache --repository="https://dl-cdn.alpinelinux.org/alpine/v3.16/main" 'nodejs=16.19.1-r0' 'npm=8.10.0-r0'; \
   else \
       apk add --no-cache npm; \
   fi
