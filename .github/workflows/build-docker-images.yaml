@@ -60,8 +60,8 @@ jobs:
             exit 0
           fi
 
-          if [ "${{ github.ref }}" != "refs/heads/master" ]; then
-            echo "Not on master branch, skipping push."
+          if [ "${{ github.ref }}" != "refs/heads/main" ]; then
+            echo "Not on main branch, skipping push."
             exit 0
           fi
 
@@ -239,8 +239,8 @@ jobs:
             exit 0
           fi
 
-          if [ "${{ github.ref }}" != "refs/heads/master" ]; then
-            echo "Not on master branch, skipping push."
+          if [ "${{ github.ref }}" != "refs/heads/main" ]; then
+            echo "Not on main branch, skipping push."
             exit 0
           fi
 
