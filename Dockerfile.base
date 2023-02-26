@@ -7,7 +7,11 @@ RUN \
     apk add --no-cache git zip unzip zlib-dev libpng-dev icu-dev libzip-dev bash jq \
         mysql mysql-client python3 make g++ && \
     echo 'alias ll="ls -lha"' >> ~/.bashrc && \
-    install-php-extensions gd intl pdo_mysql zip xsl pcov redis
+    install-php-extensions gd intl pdo_mysql zip xsl pcov redis && \
+    curl -1sLf \
+      'https://dl.cloudsmith.io/public/friendsofshopware/stable/setup.alpine.sh' \
+      | bash && \
+    apk add --no-cache shopware-cli
 
 RUN \
     mysql_install_db --datadir=/var/lib/mysql --user=mysql && \
@@ -27,9 +31,6 @@ RUN \
     wget https://github.com/humbug/php-scoper/releases/download/${PHP_SCOPER_VERSION}/php-scoper.phar -O /opt/bin/php-scoper && \
     chmod +x /opt/bin/plugin-uploader /opt/bin/php-scoper && \
     wget https://raw.githubusercontent.com/shopware/platform/v6.4.5.1/src/Core/TestBootstrapper.php -O /opt/share/shopware/tests/TestBootstrapperFallback.php
-
-ARG SHOPWARE_CLI_VERSION=0.1.52
-COPY --from=ghcr.io/friendsofshopware/shopware-cli:${SHOPWARE_CLI_VERSION} /usr/local/bin/shopware-cli /opt/bin/shopware-cli
 
 COPY --from=composer/composer:2.4.4-bin /composer /usr/bin/composer
 
