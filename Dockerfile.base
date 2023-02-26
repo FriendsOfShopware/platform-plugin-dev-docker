@@ -25,14 +25,14 @@ COPY rootfs/ /
 
 ARG PLUGIN_UPLOADER_VERSION=0.3.16
 ARG PHP_SCOPER_VERSION=0.14.0
+ARG COMPOSER_VERSION=2.4.4
 
 RUN \
     wget -q https://github.com/FriendsOfShopware/FroshPluginUploader/releases/download/${PLUGIN_UPLOADER_VERSION}/frosh-plugin-upload.phar -O /opt/bin/plugin-uploader && \
     wget -q https://github.com/humbug/php-scoper/releases/download/${PHP_SCOPER_VERSION}/php-scoper.phar -O /opt/bin/php-scoper && \
-    chmod +x /opt/bin/plugin-uploader /opt/bin/php-scoper && \
+    wget -q https://github.com/composer/composer/releases/download/${COMPOSER_VERSION}/composer.phar -O /opt/bin/composer && \
+    chmod +x /opt/bin/plugin-uploader /opt/bin/php-scoper /opt/bin/composer && \
     wget -q https://raw.githubusercontent.com/shopware/platform/v6.4.5.1/src/Core/TestBootstrapper.php -O /opt/share/shopware/tests/TestBootstrapperFallback.php
-
-COPY --from=composer/composer:2.4.4-bin /composer /usr/bin/composer
 
 ENV PATH="/opt/bin:/opt/shopware/bin:${PATH}"
 ENV COMPOSER_ALLOW_SUPERUSER=1
