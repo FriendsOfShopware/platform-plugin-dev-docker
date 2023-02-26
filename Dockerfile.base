@@ -31,8 +31,7 @@ RUN \
 ARG SHOPWARE_CLI_VERSION=0.1.52
 COPY --from=ghcr.io/friendsofshopware/shopware-cli:${SHOPWARE_CLI_VERSION} /usr/local/bin/shopware-cli /opt/bin/shopware-cli
 
-ARG COMPOSER_VERSION=2.4.4-bin
-COPY --from=composer/composer:${COMPOSER_VERSION} /composer /usr/bin/composer
+COPY --from=composer/composer:2.4.4-bin /composer /usr/bin/composer
 
 ENV PATH="/opt/bin:/opt/shopware/bin:${PATH}"
 ENV COMPOSER_ALLOW_SUPERUSER=1
