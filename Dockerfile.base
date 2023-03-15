@@ -8,9 +8,7 @@ RUN \
         mysql mysql-client python3 make g++ && \
     echo 'alias ll="ls -lha"' >> ~/.bashrc && \
     install-php-extensions gd intl pdo_mysql zip xsl pcov redis && \
-    curl -1sLf \
-      'https://dl.cloudsmith.io/public/friendsofshopware/stable/setup.alpine.sh' \
-      | bash && \
+    curl -1sLf 'https://dl.cloudsmith.io/public/friendsofshopware/stable/setup.alpine.sh' | bash && \
     apk add --no-cache shopware-cli
 
 RUN \
