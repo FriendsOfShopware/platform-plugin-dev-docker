@@ -170,7 +170,7 @@ jobs:
           - shopware-version: v6.4.20.0
             php-version: "8.1"
             template: https://github.com/shopware/production
-          - shopware-version: v6.5.0.0-rc1
+          - shopware-version: v6.5.0.0-rc4
             php-version: "8.1"
             template: https://github.com/shopware/platform
           - shopware-version: 6.3
