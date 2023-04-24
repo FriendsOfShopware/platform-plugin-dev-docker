@@ -3,8 +3,7 @@
 set -eu
 
 echo "Starting mysql server"
-
-/usr/bin/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib/mysql/plugin --user=mysql >> /dev/null 2>&1 &
+/usr/bin/mysqld_safe --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib/mysql/plugin --user=mysql >> /dev/null 2>&1 &
 
 while true; do
     sleep 1
