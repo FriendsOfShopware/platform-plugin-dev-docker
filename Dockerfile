@@ -1,8 +1,8 @@
-ARG PHP_VERSION=7.4
+ARG PHP_VERSION=8.1
 FROM ghcr.io/friendsofshopware/platform-plugin-dev-base:${PHP_VERSION}
 
-ARG SHOPWARE_VERSION=dev-master
-ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
+ARG SHOPWARE_VERSION=dev-trunk
+ARG TEMPLATE_REPOSITORY=https://github.com/shopware/platform
 
 ENV SHOPWARE_BUILD_DIR /opt/shopware
 
