@@ -426,5 +426,5 @@ jobs:
         run: |
           tags="${{ steps.get-docker-tag.outputs.tag }}"
           for tag in ${tags//,/}; do
-            echo "docker push ${tag}"
+            docker push "${tag}"
           done
