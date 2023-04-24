@@ -1,5 +1,5 @@
 ARG PHP_VERSION=7.4
-FROM ghcr.io/friendsofshopware/platform-plugin-dev-base:${PHP_VERSION}
+FROM ghcr.io/friendsofshopware/platform-plugin-dev-base:${PHP_VERSION}-alpine
 
 ARG SHOPWARE_VERSION=dev-master
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
