@@ -1,17 +1,18 @@
 ARG PHP_VERSION=8.1
-FROM ghcr.io/friendsofshopware/platform-plugin-dev-base:${PHP_VERSION}
+FROM ghcr.io/friendsofshopware/platform-plugin-dev-base:${PHP_VERSION}-bullseye
 
 ARG SHOPWARE_VERSION=dev-trunk
-ARG TEMPLATE_REPOSITORY=https://github.com/shopware/platform
+ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
 
 ENV SHOPWARE_BUILD_DIR /opt/shopware
 
 RUN \
   if echo "${SHOPWARE_VERSION}" | grep -q '^v6.4.*'; then \
-      apk add --no-cache --repository="https://dl-cdn.alpinelinux.org/alpine/v3.16/main" 'nodejs=16.20.0-r0' 'npm=8.10.0-r0'; \
+      curl -fsSL https://deb.nodesource.com/setup_16.x | bash; \
   else \
-      apk add --no-cache npm; \
-  fi
+      curl -fsSL https://deb.nodesource.com/setup_current.x | bash; \
+  fi; \
+  apt-get install nodejs
 
 RUN \
     start-mysql && \
