@@ -15,6 +15,10 @@ RUN \
   apt-get install nodejs
 
 RUN \
+    node -v && \
+    npx playwright install --with-deps
+
+RUN \
     start-mysql && \
     mysql -e "CREATE DATABASE shopware" && \
     mysqladmin --user=root password 'root' && \
