@@ -327,6 +327,10 @@ jobs:
             php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/platform
+          - shopware-version: v6.5.1.0
+            php-version: "8.1"
+            flavour: bullseye
+            template: https://github.com/shopware/platform
           - shopware-version: 6.3
             php-version: "7.4"
             flavour: bullseye
