@@ -6,8 +6,35 @@ const FLAVORS = [
 ];
 
 /**
- * @todo change url when https://github.com/FriendsOfShopware/shopware-static-data/pull/1 is merged.
+ * Hardcode some versions, because e.g. there are no tags for them.
  */
+const HARDCODED_MATRIX = [
+    {
+        "shopware-version": "trunk",
+        "php-version": "8.1",
+        "flavour": "bullyseye",
+        "template": "https://github.com/shopware/platform",
+    },
+    {
+        "shopware-version": "trunk",
+        "php-version": "8.1",
+        "flavour": "alpine",
+        "template": "https://github.com/shopware/platform",
+    },
+    {
+        "shopware-version": "trunk",
+        "php-version": "8.2",
+        "flavour": "bullyseye",
+        "template": "https://github.com/shopware/platform",
+    },
+    {
+        "shopware-version": "trunk",
+        "php-version": "8.2",
+        "flavour": "alpine",
+        "template": "https://github.com/shopware/platform",
+    },
+];
+
 const loadShopwarePHPVersions = async () => {
     const response = await fetch("https://raw.githubusercontent.com/FriendsOfShopware/shopware-static-data/main/data/all-supported-php-versions-by-shopware-version.json")
     return await response.json();
@@ -96,6 +123,7 @@ async function main() {
 
             return matrix;
         })
+        .concat(HARDCODED_MATRIX)
         .flat();
 
     console.log(JSON.stringify({
