@@ -49,6 +49,15 @@ const parseMinorVersion = (version) => {
     return parseInt(parts[1], 10);
 }
 
+const parseMajorVersion = (version) => {
+    const parts = version.match(/v\d+\.(\d+).*/);
+    if (parts.length < 2) {
+        throw new Error("Unexpected version format: " + version);
+    }
+
+    return parseInt(parts[1], 10);
+}
+
 const getTemplate = (version) => {
     const minor = parseMinorVersion(version);
 
@@ -83,17 +92,25 @@ const findSupportedPhpVersion = (supportedPhpVersions, shopwareVersion) => {
     return undefined;
 }
 
-async function main() {
+async function main(args) {
+    if (args.length < 3) {
+        console.error("Usage: generate-matrix.js <major-version>");
+        console.error("Usage: generate-matrix.js 4 -- generate matrix for Shopware 6.4");
+        console.error("Usage: generate-matrix.js 5 -- generate matrix for Shopware 6.5");
+        process.exit(1);
+    }
+
+    const majorVersion = parseInt(args[2], 10);
+
     const response = await fetch("https://api.github.com/repos/shopware/platform/git/refs/tags")
     const tags = await response.json();
 
     const versions = tags.map((tag) => {
         const version = tag.ref.replace("refs/tags/", "");
-        const minor = parseMinorVersion(version);
-        
-        // We only want to support versions >= 6.3 to reduce build time
-        if (parseInt(minor) <= 3) {
-            return;
+        const major = parseMajorVersion(version);
+
+        if (major !== majorVersion) {
+            return undefined;
         }
 
         return version;
@@ -131,4 +148,4 @@ async function main() {
     }));
 }
 
-main();
+main(process.argv);
