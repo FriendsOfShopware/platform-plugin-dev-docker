@@ -91,30 +91,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - shopware-version: v6.3.0.2
-            php-version: "7.4"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.3.1.1
-            php-version: "7.4"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.3.2.1
-            php-version: "7.4"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.3.3.1
-            php-version: "7.4"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.3.4.1
-            php-version: "7.4"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.3.5.4
-            php-version: "7.4"
-            flavour: alpine
-            template: https://github.com/shopware/production
           - shopware-version: v6.4.0.0
             php-version: "7.4"
             flavour: alpine
@@ -207,10 +183,6 @@ jobs:
             php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/platform
-          - shopware-version: 6.3
-            php-version: "7.4"
-            flavour: alpine
-            template: https://github.com/shopware/production
           - shopware-version: 6.4
             php-version: "8.1"
             flavour: alpine
@@ -219,30 +191,6 @@ jobs:
             php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/platform
-          - shopware-version: v6.3.0.2
-            php-version: "7.4"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.3.1.1
-            php-version: "7.4"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.3.2.1
-            php-version: "7.4"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.3.3.1
-            php-version: "7.4"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.3.4.1
-            php-version: "7.4"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.3.5.4
-            php-version: "7.4"
-            flavour: bullseye
-            template: https://github.com/shopware/production
           - shopware-version: v6.4.0.0
             php-version: "7.4"
             flavour: bullseye
@@ -335,10 +283,6 @@ jobs:
             php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/platform
-          - shopware-version: 6.3
-            php-version: "7.4"
-            flavour: bullseye
-            template: https://github.com/shopware/production
           - shopware-version: 6.4
             php-version: "8.1"
             flavour: bullseye

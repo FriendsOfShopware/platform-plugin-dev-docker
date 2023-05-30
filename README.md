@@ -36,14 +36,14 @@ Make sure that the app folder is present in `${SHOPWARE_ROOT}/custom/apps/`. If 
 
 It is possible to specify the Shopware version or even the template with the Docker option `--build-arg`, e.g.:
 ```
-docker build --build-arg SHOPWARE_VERSION=6.3 . -t platform-plugin-dev:6.3
+docker build --build-arg SHOPWARE_VERSION=trunk . -t platform-plugin-dev:trunk
 ```
 
 In the same way it is also possible to specify the template Git repository URL:
 ```
-docker build --build-arg SHOPWARE_VERSION=6.3 \
-    --build-arg TEMPLATE_REPOSITORY='https://github.com/FriendsOfShopware/production' \
-    . -t platform-plugin-dev:6.3
+docker build --build-arg SHOPWARE_VERSION=trunk \
+    --build-arg TEMPLATE_REPOSITORY='https://github.com/FriendsOfShopware/platform' \
+    . -t platform-plugin-dev:trunk
 ```
 
 
@@ -52,7 +52,7 @@ docker build --build-arg SHOPWARE_VERSION=6.3 \
 ```yaml
 build:pack-plugin:
   image:
-    name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.3.1
+    name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.5.0
     entrypoint: [""]
   script:
     - ln -s "$(pwd)" "/plugins/${CI_PROJECT_NAME}"
@@ -68,7 +68,7 @@ build:pack-plugin:
 ```yaml
 build:pack-app:
   image:
-    name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.4.7
+    name: ghcr.io/friendsofshopware/platform-plugin-dev:v6.5.0
     entrypoint: [""]
   script:
     - start-mysql
