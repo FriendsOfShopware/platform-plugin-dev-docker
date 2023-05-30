@@ -5,6 +5,8 @@ use Shopware\Core\TestBootstrapper;
 $projectDir = $_SERVER['SHOPWARE_BUILD_DIR'];
 if (is_readable($projectDir . '/vendor/shopware/core/TestBootstrapper.php')) {
     require $projectDir . '/vendor/shopware/core/TestBootstrapper.php';
+if (is_readable($projectDir . '/src/Core/TestBootstrapper.php')) {
+    require $projectDir . '/src/Core/TestBootstrapper.php';
 } elseif (is_readable(__DIR__ . '/TestBootstrapperFallback.php')) {
     // For old Shopware versions which do not have the TestBootstrapper we manually need
     // to set the kernel class
