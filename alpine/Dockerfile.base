@@ -7,7 +7,7 @@ RUN \
     apk add --no-cache git zip unzip zlib-dev libpng-dev icu-dev libzip-dev bash jq \
         mysql mysql-client python3 make g++ && \
     echo 'alias ll="ls -lha"' >> ~/.bashrc && \
-    install-php-extensions gd intl pdo_mysql zip xsl pcov redis && \
+    install-php-extensions gd intl pdo_mysql zip xsl pcov redis bcmath && \
     curl -1sLf 'https://dl.cloudsmith.io/public/friendsofshopware/stable/setup.alpine.sh' | bash && \
     apk add --no-cache shopware-cli
 

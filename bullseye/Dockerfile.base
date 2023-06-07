@@ -7,7 +7,7 @@ RUN \
     apt-get update && apt-get install -y git zip unzip wget zlib1g-dev libpng-dev libicu-dev libzip-dev bash jq gnupg2 apt-transport-https \
         mariadb-server mariadb-client python3 make g++ && \
     echo 'alias ll="ls -lha"' >> ~/.bashrc && \
-    install-php-extensions gd intl pdo_mysql zip xsl pcov redis && \
+    install-php-extensions gd intl pdo_mysql zip xsl pcov redis bcmath && \
     curl -1sLf 'https://dl.cloudsmith.io/public/friendsofshopware/stable/setup.deb.sh' | bash && \
     apt install shopware-cli && \
     rm -rf /var/lib/apt/lists/*
