@@ -9,6 +9,8 @@ ENV SHOPWARE_BUILD_DIR /opt/shopware
 RUN \
   if echo "${SHOPWARE_VERSION}" | grep -q '^v6.4.*'; then \
       curl -fsSL https://deb.nodesource.com/setup_16.x | bash; \
+  elif echo "${SHOPWARE_VERSION}" | grep -q '^v6.5.*'; then \
+      curl -fsSL https://deb.nodesource.com/setup_18.x | bash; \
   else \
       curl -fsSL https://deb.nodesource.com/setup_current.x | bash; \
   fi; \
