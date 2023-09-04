@@ -195,6 +195,10 @@ jobs:
             php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/platform
+          - shopware-version: v6.5.5.0
+            php-version: "8.1"
+            flavour: alpine
+            template: https://github.com/shopware/platform
           - shopware-version: 6.4
             php-version: "8.1"
             flavour: alpine
@@ -304,6 +308,10 @@ jobs:
             flavour: bullseye
             template: https://github.com/shopware/platform
           - shopware-version: v6.5.4.1
+            php-version: "8.1"
+            flavour: bullseye
+            template: https://github.com/shopware/platform
+          - shopware-version: v6.5.5.0
             php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/platform
