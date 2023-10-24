@@ -178,39 +178,39 @@ jobs:
           - shopware-version: v6.5.0.0
             php-version: "8.1"
             flavour: alpine
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.5.1.1
             php-version: "8.1"
             flavour: alpine
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.5.2.1
             php-version: "8.1"
             flavour: alpine
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.5.3.3
             php-version: "8.1"
             flavour: alpine
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.5.4.1
             php-version: "8.1"
             flavour: alpine
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.5.5.2
             php-version: "8.1"
             flavour: alpine
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.5.6.0
             php-version: "8.1"
             flavour: alpine
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: 6.4
             php-version: "8.1"
             flavour: alpine
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: trunk
             php-version: "8.1"
             flavour: alpine
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.4.0.0
             php-version: "7.4"
             flavour: bullseye
@@ -298,39 +298,39 @@ jobs:
           - shopware-version: v6.5.0.0
             php-version: "8.1"
             flavour: bullseye
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.5.1.1
             php-version: "8.1"
             flavour: bullseye
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.5.2.1
             php-version: "8.1"
             flavour: bullseye
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.5.3.3
             php-version: "8.1"
             flavour: bullseye
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.5.4.1
             php-version: "8.1"
             flavour: bullseye
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.5.5.2
             php-version: "8.1"
             flavour: bullseye
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: v6.5.6.0
             php-version: "8.1"
             flavour: bullseye
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: 6.4
             php-version: "8.1"
             flavour: bullseye
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
           - shopware-version: trunk
             php-version: "8.1"
             flavour: bullseye
-            template: https://github.com/shopware/platform
+            template: https://github.com/shopware/shopware
 
     steps:
       - name: Clone
