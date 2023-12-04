@@ -1,5 +1,6 @@
 ARG PHP_VERSION
-FROM php:${PHP_VERSION}-cli-alpine3.16
+ARG DISTRIBUTION_VERSION=3.16
+FROM php:${PHP_VERSION}-cli-alpine${DISTRIBUTION_VERSION}
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 

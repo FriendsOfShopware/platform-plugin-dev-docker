@@ -1,5 +1,5 @@
 ARG PHP_VERSION=8.1
-FROM ghcr.io/friendsofshopware/platform-plugin-dev-base:${PHP_VERSION}-bullseye
+FROM ghcr.io/friendsofshopware/platform-plugin-dev-base:${PHP_VERSION}-debian
 
 ARG SHOPWARE_VERSION=dev-trunk
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production

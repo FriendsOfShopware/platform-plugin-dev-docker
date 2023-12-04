@@ -1,5 +1,6 @@
 ARG PHP_VERSION
-FROM php:${PHP_VERSION}-cli-bullseye
+ARG DISTRIBUTION_VERSION=bullseye
+FROM php:${PHP_VERSION}-cli-${DISTRIBUTION_VERSION}
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
