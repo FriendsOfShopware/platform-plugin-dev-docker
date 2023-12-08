@@ -95,22 +95,6 @@ jobs:
             php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
-          - shopware-version: v6.4.2.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.3.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.4.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.5.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
           - shopware-version: v6.4.6.1
             php-version: "8.1"
             flavour: alpine
@@ -215,30 +199,6 @@ jobs:
             php-version: "8.2"
             flavour: alpine
             template: https://github.com/shopware/shopware
-          - shopware-version: v6.4.0.0
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.1.2
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.2.1
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.3.1
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.4.1
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.5.1
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/production
           - shopware-version: v6.4.6.1
             php-version: "8.1"
             flavour: bullseye
