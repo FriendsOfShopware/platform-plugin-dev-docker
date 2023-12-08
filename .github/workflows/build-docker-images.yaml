@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.0', '8.1', '8.2']
+        php-version: ['8.1', '8.2']
         flavour: ['alpine', 'bullseye']
 
     steps:
@@ -92,71 +92,71 @@ jobs:
       matrix:
         include:
           - shopware-version: v6.4.0.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.1.2
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.2.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.3.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.4.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.5.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.6.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.7.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.8.2
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.9.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.10.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.11.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.12.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.13.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.14.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.15.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.16.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.17.1
@@ -220,71 +220,71 @@ jobs:
             flavour: alpine
             template: https://github.com/shopware/shopware
           - shopware-version: v6.4.0.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.1.2
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.2.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.3.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.4.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.5.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.6.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.7.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.8.2
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.9.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.10.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.11.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.12.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.13.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.14.0
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.15.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.16.1
-            php-version: "8.0"
+            php-version: "8.1"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.17.1
