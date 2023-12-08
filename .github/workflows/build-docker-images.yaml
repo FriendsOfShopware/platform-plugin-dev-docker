@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.4', '8.0', '8.1', '8.2']
+        php-version: ['8.0', '8.1', '8.2']
         flavour: ['alpine', 'bullseye']
 
     steps:
@@ -92,7 +92,7 @@ jobs:
       matrix:
         include:
           - shopware-version: v6.4.0.0
-            php-version: "7.4"
+            php-version: "8.0"
             flavour: alpine
             template: https://github.com/shopware/production
           - shopware-version: v6.4.1.2
@@ -220,7 +220,7 @@ jobs:
             flavour: alpine
             template: https://github.com/shopware/shopware
           - shopware-version: v6.4.0.0
-            php-version: "7.4"
+            php-version: "8.0"
             flavour: bullseye
             template: https://github.com/shopware/production
           - shopware-version: v6.4.1.2
