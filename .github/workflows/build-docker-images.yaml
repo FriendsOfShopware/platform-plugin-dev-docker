@@ -91,10 +91,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - shopware-version: v6.4.1.2
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
           - shopware-version: v6.4.6.1
             php-version: "8.1"
             flavour: alpine
