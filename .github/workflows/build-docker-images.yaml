@@ -107,7 +107,7 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.generate-matrix-4.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
 
     steps:
       - name: Clone
