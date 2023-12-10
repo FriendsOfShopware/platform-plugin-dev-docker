@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const FLAVORS = [
+const FLAVOURS = [
     "alpine",
     "bullseye",
 ];
@@ -10,19 +10,16 @@ const FLAVORS = [
  */
 const HARDCODED_MATRIX = [
     {
-        "shopware-version": "6.4",
-        "php-version": "8.1",
-        "template": "https://github.com/shopware/shopware",
+        "shopwareVersion": "6.4",
+        "phpVersions": ["8.1", "8.2"],
     },
     {
-        "shopware-version": "6.5.x",
-        "php-version": "8.1",
-        "template": "https://github.com/shopware/shopware",
+        "shopwareVersion": "6.5.x",
+        "phpVersions": ["8.1", "8.2", "8.3"],
     },
     {
-        "shopware-version": "trunk",
-        "php-version": "8.2",
-        "template": "https://github.com/shopware/shopware",
+        "shopwareVersion": "trunk",
+        "phpVersions": ["8.2", "8.3"],
     },
 ];
 
@@ -50,14 +47,30 @@ const parseMinorVersion = (version) => {
 }
 
 const getTemplate = (version) => {
-    const minor = parseMinorVersion(version);
+    try {
+        const minor = parseMinorVersion(version);
 
-    // For everything below 6.5, we need the shopware/production template.
-    if (minor <= 4) {
-        return "https://github.com/shopware/production";
+        // For everything below 6.5, we need the shopware/production template.
+        if (minor <= 4) {
+            return "https://github.com/shopware/production";
+        }
+    } catch (e) {
+        // Ignore
     }
 
     return "https://github.com/shopware/shopware";
+}
+
+function addMatrixEntries(matrix, shopwareVersion, phpVersion, isMain) {
+    FLAVOURS.forEach((flavour) => {
+        matrix.push({
+            "shopware-version": shopwareVersion,
+            "php-version": phpVersion,
+            "flavour": flavour,
+            "template": getTemplate(shopwareVersion),
+            "is-main": isMain,
+        });
+    });
 }
 
 async function main() {
@@ -84,22 +97,17 @@ async function main() {
 
     }
 
+    if (Object.entries(shopwareMinorVersions).length === 0) {
+        throw new Error("No shopwareMinorVersions entries generated.");
+    }
+
     let matrix = [];
 
-    for (const [_, line] of  Object.entries(shopwareMinorVersions)) {
-        const minPhpVersions = line.phpVersions.filter((phpVersion) => phpVersion >= minPHPVersion);
+    for (const [_, entry] of  Object.entries(shopwareMinorVersions)) {
+        const supportedPhpVersions = entry.phpVersions.filter((phpVersion) => phpVersion >= minPHPVersion);
 
-        if (minPhpVersions.length === 0) {
-            continue;
-        }
-
-        FLAVORS.forEach((flavor) => {
-            matrix.push({
-                "shopware-version": 'v' + line.shopwareVersion,
-                "php-version": minPhpVersions[0],
-                "flavour": flavor,
-                "template": getTemplate(line.shopwareVersion),
-            });
+        supportedPhpVersions.forEach((phpVersion, i) => {
+            addMatrixEntries(matrix, 'v' + entry.shopwareVersion, phpVersion, i === supportedPhpVersions.length - 1);
         });
     }
 
@@ -108,10 +116,10 @@ async function main() {
     }
 
     HARDCODED_MATRIX.forEach((entry) => {
-        FLAVORS.forEach((flavor) => {
-            entry.flavour = flavor;
+        const supportedPhpVersions = entry.phpVersions.filter((phpVersion) => phpVersion >= minPHPVersion);
 
-            matrix.push(entry);
+        supportedPhpVersions.forEach((phpVersion, i) => {
+            addMatrixEntries(matrix, entry.shopwareVersion, phpVersion, i === supportedPhpVersions.length - 1);
         });
     });
 

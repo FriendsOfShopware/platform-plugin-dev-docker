@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.1', '8.2']
+        php-version: ['8.1', '8.2', '8.3']
         flavour: ['alpine', 'bullseye']
 
     steps:
@@ -124,13 +124,18 @@ jobs:
 
           [ "${shopware_version_tag}" == "" ] && exit 1
 
-          tag="${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}-${{ matrix.flavour }}"
+          tag="${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}-${{ matrix.php-version }}-${{ matrix.flavour }}"
 
           if [[ "${{ matrix.flavour }}" == "alpine" ]]; then
-            tag="$tag, ${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}"
+            tag="$tag, ${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}-${{ matrix.php-version }}"
+          
+            if [[ "${{ matrix.is-main }}" == "true" ]]; then
+              tag="$tag, ${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}"
+            fi
           fi
 
           echo "Shopware version ${{ matrix.shopware-version }}"
+          echo "PHP version ${{ matrix.php-version }}"
           echo "Image Tag: ${tag}"
 
           echo "tag=${tag}" >> $GITHUB_OUTPUT
