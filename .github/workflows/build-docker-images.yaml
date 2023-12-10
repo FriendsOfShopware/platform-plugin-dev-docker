@@ -132,6 +132,9 @@ jobs:
             if [[ "${{ matrix.is-main }}" == "true" ]]; then
               tag="$tag, ${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}"
             fi
+          elif [[ "${{ matrix.is-main }}" == "true" ]]; then
+              tag="$tag, ${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}-${{ matrix.flavour }}"
+            fi
           fi
 
           echo "Shopware version ${{ matrix.shopware-version }}"
