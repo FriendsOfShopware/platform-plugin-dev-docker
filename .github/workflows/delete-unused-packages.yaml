@@ -8,18 +8,18 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
 
     steps:
       - name: Delete untagged platform-plugin-dev packages
-        uses: camargo/delete-untagged-action@v1
+        uses: actions/delete-package-versions@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           package-name: platform-plugin-dev
+          min-versions-to-keep: 0
+          delete-only-untagged-versions: true
 
       - name: Delete untagged platform-plugin-dev-base packages
-        uses: camargo/delete-untagged-action@v1
+        uses: actions/delete-package-versions@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           package-name: platform-plugin-dev-base
+          min-versions-to-keep: 0
+          delete-only-untagged-versions: true
