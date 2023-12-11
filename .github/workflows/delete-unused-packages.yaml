@@ -3,7 +3,7 @@ name: Delete unused packages
 on:
   workflow_dispatch:
   schedule:
-    - cron: '10,40 * * * *'
+    - cron: '*/5 * * * *'
 
 jobs:
   run:
