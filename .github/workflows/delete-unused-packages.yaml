@@ -11,13 +11,13 @@ jobs:
 
     steps:
       - name: Delete untagged platform-plugin-dev packages
-        uses: actions/delete-package-versions@v4
+        uses: actions/delete-package-versions@main
         with:
           package-name: platform-plugin-dev
           delete-only-untagged-versions: "true"
 
       - name: Delete untagged platform-plugin-dev-base packages
-        uses: actions/delete-package-versions@v4
+        uses: actions/delete-package-versions@main
         with:
           package-name: platform-plugin-dev-base
           delete-only-untagged-versions: "true"
