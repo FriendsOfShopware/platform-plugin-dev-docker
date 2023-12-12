@@ -17,7 +17,7 @@ jobs:
         with:
           package-name: platform-plugin-dev-base
           package-type: container
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN_GITHUB }}
           min-versions-to-keep: 0
           delete-only-untagged-versions: "true"
 
@@ -26,6 +26,6 @@ jobs:
         with:
           package-name: platform-plugin-dev
           package-type: container
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN_GITHUB }}
           min-versions-to-keep: 0
           delete-only-untagged-versions: "true"
