@@ -3,35 +3,19 @@ name: Delete unused packages
 on:
   workflow_dispatch:
   schedule:
-    - cron: '5 * * * *'
+    - cron: '*/5 * * * *'
 
 jobs:
   run:
+    strategy:
+      matrix:
+        package-name: [platform-plugin-dev, platform-plugin-dev-base]
     runs-on: ubuntu-latest
     permissions:
       packages: write
 
     steps:
-      - name: Delete untagged platform-plugin-dev-base packages
-        uses: actions/delete-package-versions@v4
-        with:
-          package-name: platform-plugin-dev-base
-          package-type: container
-          token: ${{ secrets.PAT_TOKEN_GITHUB }}
-          min-versions-to-keep: 0
-          delete-only-untagged-versions: "true"
-
-# THIS DOES NOT WORK WITH MANY MANY MANY PACKAGES
-#      - name: Delete untagged platform-plugin-dev packages
-#        uses: actions/delete-package-versions@v4
-#        with:
-#          package-name: platform-plugin-dev
-#          package-type: container
-#          token: ${{ secrets.PAT_TOKEN_GITHUB }}
-#          min-versions-to-keep: 0
-#          delete-only-untagged-versions: "true"
-
-      - name: Delete untagged images of platform-plugin-dev
+      - name: Delete untagged images of ${{ matrix.package-name }}
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.PAT_TOKEN_GITHUB }}
@@ -49,5 +33,5 @@ jobs:
             }
         env:
           OWNER: orgs/FriendsOfShopware # or orgs/<org name>
-          PACKAGE_NAME: platform-plugin-dev
+          PACKAGE_NAME: ${{ matrix.package-name }}
           PER_PAGE: 100
