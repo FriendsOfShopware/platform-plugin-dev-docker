@@ -18,7 +18,7 @@ jobs:
       - name: Delete untagged images of ${{ matrix.package-name }}
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.PAT_TOKEN_GITHUB }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions",
               { per_page: ${{ env.PER_PAGE }}
