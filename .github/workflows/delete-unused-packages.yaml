@@ -21,6 +21,7 @@ jobs:
           min-versions-to-keep: 0
           delete-only-untagged-versions: "true"
 
+# THIS DOES NOT WORK WITH MANY MANY MANY PACKAGES
 #      - name: Delete untagged platform-plugin-dev packages
 #        uses: actions/delete-package-versions@v4
 #        with:
@@ -29,3 +30,24 @@ jobs:
 #          token: ${{ secrets.PAT_TOKEN_GITHUB }}
 #          min-versions-to-keep: 0
 #          delete-only-untagged-versions: "true"
+
+      - name: Delete untagged images of platform-plugin-dev
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_TOKEN_GITHUB }}
+          script: |
+            const response = await github.request("GET /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions",
+              { per_page: ${{ env.PER_PAGE }}
+            });
+            for (version of response.data) {
+                if (version.metadata.container.tags.length == 0) {
+                    console.log("delete " + version.id)
+
+                    const deleteResponse = await github.request("DELETE /${{ env.OWNER }}/packages/container/${{ env.PACKAGE_NAME }}/versions/" + version.id, { });
+                    console.log("status " + deleteResponse.status)
+                }
+            }
+        env:
+          OWNER: orgs/FriendsOfShopware # or orgs/<org name>
+          PACKAGE_NAME: platform-plugin-dev
+          PER_PAGE: 100
