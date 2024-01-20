@@ -4,7 +4,7 @@ on:
   push:
   workflow_dispatch:
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '30 1 * * *'
 
 env:
   DOCKER_REPOSITORY: ghcr.io/friendsofshopware/platform-plugin-dev
@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['7.4', '8.0', '8.1', '8.2']
+        php-version: ['8.1', '8.2', '8.3']
         flavour: ['alpine', 'bullseye']
 
     steps:
@@ -83,282 +83,35 @@ jobs:
           docker push "${{ env.DOCKER_REPOSITORY }}-base:${{ matrix.php-version }}-${{ matrix.flavour }}"
 
 
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
+    steps:
+      - name: Clone
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Generate matrix
+        id: generate-matrix
+        run: |
+          matrix=$(node bin/generate-matrix.js)
+          echo "matrix=${matrix}" >> $GITHUB_OUTPUT
+
   build:
-    needs: build-base
+    needs:
+      - build-base
+      - generate-matrix
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - shopware-version: v6.4.0.0
-            php-version: "7.4"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.1.2
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.2.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.3.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.4.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.5.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.6.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.7.0
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.8.2
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.9.0
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.10.0
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.11.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.12.0
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.13.0
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.14.0
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.15.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.16.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.17.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.18.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.19.0
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.20.2
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.5.0.0
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.1.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.2.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.3.3
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.4.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.5.2
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.6.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.7.4
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.8.2
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: 6.4
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: 6.5.x
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: trunk
-            php-version: "8.2"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.4.0.0
-            php-version: "7.4"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.1.2
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.2.1
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.3.1
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.4.1
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.5.1
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.6.1
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.7.0
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.8.2
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.9.0
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.10.0
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.11.1
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.12.0
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.13.0
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.14.0
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.15.1
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.16.1
-            php-version: "8.0"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.17.1
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.18.1
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.19.0
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.20.2
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/production
-          - shopware-version: v6.5.0.0
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.1.1
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.2.1
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.3.3
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.4.1
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.5.2
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.6.1
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.7.4
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.8.2
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/shopware
-          - shopware-version: 6.4
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/shopware
-          - shopware-version: 6.5.x
-            php-version: "8.1"
-            flavour: bullseye
-            template: https://github.com/shopware/shopware
-          - shopware-version: trunk
-            php-version: "8.2"
-            flavour: bullseye
-            template: https://github.com/shopware/shopware
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
 
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get Tag
         id: get-docker-tag
@@ -371,13 +124,20 @@ jobs:
 
           [ "${shopware_version_tag}" == "" ] && exit 1
 
-          tag="${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}-${{ matrix.flavour }}"
+          tag="${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}-${{ matrix.php-version }}-${{ matrix.flavour }}"
 
           if [[ "${{ matrix.flavour }}" == "alpine" ]]; then
-            tag="$tag, ${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}"
+            tag="$tag, ${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}-${{ matrix.php-version }}"
+          
+            if [[ "${{ matrix.is-main }}" == "true" ]]; then
+              tag="$tag, ${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}"
+            fi
+          elif [[ "${{ matrix.is-main }}" == "true" ]]; then
+            tag="$tag, ${{ env.DOCKER_REPOSITORY }}:${shopware_version_tag}-${{ matrix.flavour }}"
           fi
 
           echo "Shopware version ${{ matrix.shopware-version }}"
+          echo "PHP version ${{ matrix.php-version }}"
           echo "Image Tag: ${tag}"
 
           echo "tag=${tag}" >> $GITHUB_OUTPUT
