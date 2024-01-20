@@ -111,7 +111,7 @@ jobs:
 
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get Tag
         id: get-docker-tag
