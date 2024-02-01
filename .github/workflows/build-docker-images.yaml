@@ -365,7 +365,7 @@ jobs:
             template: https://github.com/shopware/shopware
           - shopware-version: v6.5.7.4
             php-version: "8.1"
-            flavour: bullseye
+            flavour: debian
             template: https://github.com/shopware/shopware
           - shopware-version: v6.5.8.2
             php-version: "8.1"
@@ -381,7 +381,7 @@ jobs:
             template: https://github.com/shopware/shopware
           - shopware-version: 6.5.x
             php-version: "8.1"
-            flavour: bullseye
+            flavour: debian
             template: https://github.com/shopware/shopware
           - shopware-version: trunk
             php-version: "8.3"
