@@ -6,7 +6,12 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 
 RUN \
     apk add --no-cache git zip unzip zlib-dev libpng-dev icu-dev libzip-dev bash jq \
-        mysql mysql-client python3 make g++ && \
+        python3 make g++ && \
+    if cat /etc/alpine-release | grep -q '^3.16.*'; then \
+        apk add --no-cache --repository="https://mirror.fel.cvut.cz/alpine/snapshots/2024-01-20/v3.16/main" 'mysql=10.6.14-r0' 'mariadb=10.6.14-r0' 'mysql-client=10.6.14-r0' 'mariadb-client=10.6.14-r0' 'mariadb-common=10.6.14-r0'; \
+    else \
+        apk add --no-cache mysql mysql-client; \
+    fi && \
     echo 'alias ll="ls -lha"' >> ~/.bashrc && \
     install-php-extensions gd intl pdo_mysql zip xsl pcov redis bcmath && \
     curl -1sLf 'https://dl.cloudsmith.io/public/friendsofshopware/stable/setup.alpine.sh' | bash && \
