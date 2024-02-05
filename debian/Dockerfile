@@ -2,7 +2,6 @@ ARG PHP_VERSION=8.1
 FROM ghcr.io/friendsofshopware/platform-plugin-dev-base:${PHP_VERSION}-debian
 
 ARG SHOPWARE_VERSION=dev-trunk
-ARG TEMPLATE_REPOSITORY=https://github.com/shopware/production
 
 ENV SHOPWARE_BUILD_DIR /opt/shopware
 
@@ -24,6 +23,8 @@ RUN \
 RUN \
     node -v && \
     npx playwright install --with-deps
+
+ARG TEMPLATE_REPOSITORY=https://github.com/shopware/shopware
 
 RUN \
     start-mysql && \

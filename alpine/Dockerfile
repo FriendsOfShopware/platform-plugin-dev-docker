@@ -2,7 +2,6 @@ ARG PHP_VERSION=8.1
 FROM ghcr.io/friendsofshopware/platform-plugin-dev-base:${PHP_VERSION}-alpine
 
 ARG SHOPWARE_VERSION=dev-trunk
-ARG TEMPLATE_REPOSITORY=https://github.com/shopware/platform
 
 ENV SHOPWARE_BUILD_DIR /opt/shopware
 
@@ -14,6 +13,8 @@ RUN \
   else \
       apk add --no-cache npm; \
   fi
+
+ARG TEMPLATE_REPOSITORY=https://github.com/shopware/shopware
 
 RUN \
     start-mysql && \
