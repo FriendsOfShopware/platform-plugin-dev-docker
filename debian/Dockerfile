@@ -11,6 +11,7 @@ RUN \
       curl -fsSL https://deb.nodesource.com/setup_16.x | bash; \
   elif echo "${SHOPWARE_VERSION}" | grep -q '^v6.5.*'; then \
       curl -fsSL https://deb.nodesource.com/setup_18.x | bash; \
+      npm install -g npm@^9.0.0 \
   elif echo "${SHOPWARE_VERSION}" | grep -q '^v6.6.*'; then \
       curl -fsSL https://deb.nodesource.com/setup_20.x | bash; \
   else \
