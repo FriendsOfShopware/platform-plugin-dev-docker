@@ -42,6 +42,9 @@ jobs:
           - php-version: "8.3"
             flavour: debian
             distribution-version: bookworm
+          - php-version: "8.4"
+            flavour: debian
+            distribution-version: bookworm
 
     steps:
       - name: Clone
@@ -267,7 +270,11 @@ jobs:
             php-version: "8.3"
             flavour: alpine
             template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.8.1
+          - shopware-version: v6.6.8.2
+            php-version: "8.3"
+            flavour: alpine
+            template: https://github.com/shopware/shopware
+          - shopware-version: v6.6.9.0
             php-version: "8.3"
             flavour: alpine
             template: https://github.com/shopware/shopware
@@ -435,7 +442,11 @@ jobs:
             php-version: "8.3"
             flavour: debian
             template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.8.1
+          - shopware-version: v6.6.8.2
+            php-version: "8.3"
+            flavour: debian
+            template: https://github.com/shopware/shopware
+          - shopware-version: v6.6.9.0
             php-version: "8.3"
             flavour: debian
             template: https://github.com/shopware/shopware
