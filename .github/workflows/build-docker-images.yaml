@@ -42,9 +42,6 @@ jobs:
           - php-version: "8.3"
             flavour: debian
             distribution-version: bookworm
-          - php-version: "8.4"
-            flavour: debian
-            distribution-version: bookworm
 
     steps:
       - name: Clone
