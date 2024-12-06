@@ -16,6 +16,8 @@ RUN \
 
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/shopware
 
+COPY patches/Migration1586260286AddProductMainVariant.php.patch ./tmp/
+
 RUN \
     start-mysql && \
     mysql -e "CREATE DATABASE shopware" && \
@@ -23,6 +25,10 @@ RUN \
     mkdir -p /opt/shopware && \
     git clone -b ${SHOPWARE_VERSION} --depth 1 "${TEMPLATE_REPOSITORY}" "${SHOPWARE_BUILD_DIR}" && \
     cd "${SHOPWARE_BUILD_DIR}" && \
+        if echo "${SHOPWARE_VERSION}" | grep -q '^v6.4.*'; then \
+            git apply /tmp/Migration1586260286AddProductMainVariant.php.patch && \
+        fi && \
+        rm /tmp/Migration1586260286AddProductMainVariant.php.patch && \
         mkdir -p custom && \
         composer install --no-interaction -o && \
         APP_URL="http://localhost" php bin/console system:setup --database-url=mysql://root:root@localhost:3306/shopware --generate-jwt-keys -nq && \
