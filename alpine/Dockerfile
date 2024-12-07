@@ -26,7 +26,7 @@ RUN \
     git clone -b ${SHOPWARE_VERSION} --depth 1 "${TEMPLATE_REPOSITORY}" "${SHOPWARE_BUILD_DIR}" && \
     cd "${SHOPWARE_BUILD_DIR}" && \
         if echo "${SHOPWARE_VERSION}" | grep -q '^v6.4.*'; then \
-            git apply /tmp/Migration1586260286AddProductMainVariant.php.patch && \
+            git apply /tmp/Migration1586260286AddProductMainVariant.php.patch; \
         fi && \
         rm /tmp/Migration1586260286AddProductMainVariant.php.patch && \
         mkdir -p custom && \
