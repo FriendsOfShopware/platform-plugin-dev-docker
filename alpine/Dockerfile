@@ -24,7 +24,11 @@ RUN \
     git clone -b ${SHOPWARE_VERSION} --depth 1 "${TEMPLATE_REPOSITORY}" "${SHOPWARE_BUILD_DIR}" && \
     cd "${SHOPWARE_BUILD_DIR}" && \
         mkdir -p custom && \
-        composer install --no-interaction -o && \
+        if [ -f composer.lock ]; then \
+            composer install --no-interaction -o; \
+        else \
+            composer update --prefer-lowest --prefer-stable --no-interaction -o; \
+        fi && \
         APP_URL="http://localhost" php bin/console system:setup --database-url=mysql://root:root@localhost:3306/shopware --generate-jwt-keys -nq && \
         php bin/console system:install -fnq --create-database && \
         composer clearcache && \
