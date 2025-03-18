@@ -61,8 +61,8 @@ jobs:
           file: "${{ matrix.flavour }}/Dockerfile.base"
           push: false
           load: true
-          cache-from: type=gha,scope=${{ github.ref_name }}-${{ env.CACHE_KEY }}-${{ matrix.php-version }}-${{ matrix.flavour }}
-          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}-${{ env.CACHE_KEY }}-${{ matrix.php-version }}-${{ matrix.flavour }}
+          cache-from: type=gha,scope=${{ env.CACHE_KEY }}-${{ matrix.php-version }}-${{ matrix.flavour }}
+          cache-to: type=gha,mode=max,scope=${{ env.CACHE_KEY }}-${{ matrix.php-version }}-${{ matrix.flavour }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}
@@ -509,8 +509,8 @@ jobs:
           file: "${{ matrix.flavour }}/Dockerfile"
           push: false
           load: true
-          cache-from: type=gha,scope=${{ github.ref_name }}-${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}-${{ matrix.flavour }}
-          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}-${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}-${{ matrix.flavour }}
+          cache-from: type=gha,scope=${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}-${{ matrix.flavour }}
+          cache-to: type=gha,mode=max,scope=${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}-${{ matrix.flavour }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}
