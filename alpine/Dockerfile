@@ -3,7 +3,7 @@ FROM ghcr.io/friendsofshopware/platform-plugin-dev-base:${PHP_VERSION}-alpine
 
 ARG SHOPWARE_VERSION=dev-trunk
 
-ENV SHOPWARE_BUILD_DIR /opt/shopware
+ENV SHOPWARE_BUILD_DIR=/opt/shopware
 
 RUN \
   if echo "${SHOPWARE_VERSION}" | grep -q '^v6.4.*'; then \
