@@ -32,7 +32,11 @@ RUN \
             fi && \
             composer update --prefer-lowest --prefer-stable --no-interaction -o; \
         fi && \
-        APP_URL="http://localhost" php bin/console system:setup --database-url=mysql://root:root@localhost:3306/shopware --generate-jwt-keys -nq && \
+        if echo "${SHOPWARE_VERSION}" | grep -q '^trunk'; then \
+            APP_URL="http://localhost" php bin/console system:setup --database-url=mysql://root:root@localhost:3306/shopware -nq; \
+        else \
+            APP_URL="http://localhost" php bin/console system:setup --database-url=mysql://root:root@localhost:3306/shopware --generate-jwt-keys -nq; \
+        fi && \
         php bin/console system:install -fnq --create-database && \
         composer clearcache && \
         rm -Rf .git && \
