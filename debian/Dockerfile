@@ -37,12 +37,12 @@ RUN \
         if [ -f composer.lock ]; then \
             composer install --no-interaction -o; \
         else \
-            if echo "${SHOPWARE_VERSION}" | grep -q '^trunk'; then \
+            if echo "${SHOPWARE_VERSION}" | grep -qE '^(trunk|v6\.7\.)'; then \
               jq '.conflict["symfony/type-info"] = "<7.1.8"' composer.json > composer.tmp.json && mv composer.tmp.json composer.json; \
             fi && \
             composer update --prefer-lowest --prefer-stable --no-interaction -o; \
         fi && \
-        if echo "${SHOPWARE_VERSION}" | grep -q '^trunk'; then \
+        if echo "${SHOPWARE_VERSION}" | grep -qE '^(trunk|v6\.7\.)'; then \
             APP_URL="http://localhost" php bin/console system:setup --database-url=mysql://root:root@localhost:3306/shopware -nq; \
         else \
             APP_URL="http://localhost" php bin/console system:setup --database-url=mysql://root:root@localhost:3306/shopware --generate-jwt-keys -nq; \
