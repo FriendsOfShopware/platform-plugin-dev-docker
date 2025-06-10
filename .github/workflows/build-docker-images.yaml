@@ -275,7 +275,7 @@ jobs:
             php-version: "8.3"
             flavour: alpine
             template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.10.4
+          - shopware-version: v6.6.10.5
             php-version: "8.3"
             flavour: alpine
             template: https://github.com/shopware/shopware
@@ -459,7 +459,7 @@ jobs:
             php-version: "8.3"
             flavour: debian
             template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.10.4
+          - shopware-version: v6.6.10.5
             php-version: "8.3"
             flavour: debian
             template: https://github.com/shopware/shopware
