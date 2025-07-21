@@ -95,206 +95,33 @@ jobs:
           docker push "${{ env.DOCKER_REPOSITORY }}-base:${{ matrix.php-version }}-${{ matrix.flavour }}"
 
 
-  build:
+  generate-matrix:
     needs: build-base
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create matrix
+        id: create_matrix
+        uses: fabiocaccamo/create-matrix-action@v5
+        with:
+          matrix: |
+            flavour {alpine, debian} php-version {8.1}, template {https://github.com/shopware/shopware}, shopware-version {6.5.x, v6.5.0.0, v6.5.1.1, v6.5.2.1, v6.5.3.3, v6.5.4.1, v6.5.5.2, v6.5.6.1, v6.5.7.4, v6.5.8.18}
+            flavour {alpine, debian} php-version {8.3}, template {https://github.com/shopware/shopware}, shopware-version {6.6.x, v6.6.0.3, v6.6.1.2, v6.6.2.0, v6.6.3.1, v6.6.4.1, v6.6.5.1, v6.6.6.1, v6.6.7.1, v6.6.8.2, v6.6.9.0, v6.6.10.5}
+            flavour {alpine, debian} php-version {8.3}, template {https://github.com/shopware/shopware}, shopware-version {v6.7.0.1}
+            flavour {alpine, debian} php-version {8.3}, template {https://github.com/shopware/shopware}, shopware-version {trunk}
+
+    outputs:
+      matrix: ${{ steps.create_matrix.outputs.matrix }}
+
+
+  build:
+    needs: generate-matrix
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - shopware-version: v6.5.0.0
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.1.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.2.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.3.3
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.4.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.5.2
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.6.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.7.4
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.8.18
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.0.3
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.1.2
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.2.0
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.3.1
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.4.1
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.5.1
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.6.1
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.7.1
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.8.2
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.9.0
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.10.5
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.7.0.1
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: 6.5.x
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: 6.6.x
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: trunk
-            php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.0.0
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.1.1
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.2.1
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.3.3
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.4.1
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.5.2
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.6.1
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.7.4
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.5.8.18
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.0.3
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.1.2
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.2.0
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.3.1
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.4.1
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.5.1
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.6.1
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.7.1
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.8.2
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.9.0
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.6.10.5
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: v6.7.0.1
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: 6.5.x
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: 6.6.x
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: trunk
-            php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
 
     steps:
       - name: Clone
