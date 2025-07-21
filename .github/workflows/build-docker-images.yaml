@@ -18,24 +18,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - php-version: "7.4"
-            flavour: alpine
-            distribution-version: "3.16"
-          - php-version: "8.0"
-            flavour: alpine
-            distribution-version: "3.16"
           - php-version: "8.1"
             flavour: alpine
             distribution-version: "3.16"
           - php-version: "8.3"
             flavour: alpine
             distribution-version: "3.19"
-          - php-version: "7.4"
-            flavour: debian
-            distribution-version: bullseye
-          - php-version: "8.0"
-            flavour: debian
-            distribution-version: bullseye
           - php-version: "8.1"
             flavour: debian
             distribution-version: bullseye
@@ -115,90 +103,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - shopware-version: v6.4.0.0
-            php-version: "7.4"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.1.2
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.2.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.3.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.4.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.5.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.6.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.7.0
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.8.2
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.9.0
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.10.0
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.11.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.12.0
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.13.0
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.14.0
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.15.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.16.1
-            php-version: "8.0"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.17.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.18.1
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.19.0
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.20.2
-            php-version: "8.1"
-            flavour: alpine
-            template: https://github.com/shopware/production
           - shopware-version: v6.5.0.0
             php-version: "8.1"
             flavour: alpine
@@ -281,10 +185,6 @@ jobs:
             template: https://github.com/shopware/shopware
           - shopware-version: v6.7.0.1
             php-version: "8.3"
-            flavour: alpine
-            template: https://github.com/shopware/shopware
-          - shopware-version: 6.4
-            php-version: "8.1"
             flavour: alpine
             template: https://github.com/shopware/shopware
           - shopware-version: 6.5.x
@@ -299,90 +199,6 @@ jobs:
             php-version: "8.3"
             flavour: alpine
             template: https://github.com/shopware/shopware
-          - shopware-version: v6.4.0.0
-            php-version: "7.4"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.1.2
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.2.1
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.3.1
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.4.1
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.5.1
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.6.1
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.7.0
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.8.2
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.9.0
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.10.0
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.11.1
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.12.0
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.13.0
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.14.0
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.15.1
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.16.1
-            php-version: "8.0"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.17.1
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.18.1
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.19.0
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/production
-          - shopware-version: v6.4.20.2
-            php-version: "8.1"
-            flavour: debian
-            template: https://github.com/shopware/production
           - shopware-version: v6.5.0.0
             php-version: "8.1"
             flavour: debian
@@ -465,10 +281,6 @@ jobs:
             template: https://github.com/shopware/shopware
           - shopware-version: v6.7.0.1
             php-version: "8.3"
-            flavour: debian
-            template: https://github.com/shopware/shopware
-          - shopware-version: 6.4
-            php-version: "8.1"
             flavour: debian
             template: https://github.com/shopware/shopware
           - shopware-version: 6.5.x
