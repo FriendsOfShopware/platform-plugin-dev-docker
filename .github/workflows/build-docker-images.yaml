@@ -107,7 +107,7 @@ jobs:
           matrix: |
             flavour {alpine, debian} php-version {8.1}, template {https://github.com/shopware/shopware}, shopware-version {6.5.x, v6.5.0.0, v6.5.1.1, v6.5.2.1, v6.5.3.3, v6.5.4.1, v6.5.5.2, v6.5.6.1, v6.5.7.4, v6.5.8.18}
             flavour {alpine, debian} php-version {8.3}, template {https://github.com/shopware/shopware}, shopware-version {6.6.x, v6.6.0.3, v6.6.1.2, v6.6.2.0, v6.6.3.1, v6.6.4.1, v6.6.5.1, v6.6.6.1, v6.6.7.1, v6.6.8.2, v6.6.9.0, v6.6.10.8}
-            flavour {alpine, debian} php-version {8.3}, template {https://github.com/shopware/shopware}, shopware-version {v6.7.0.1, v6.7.1.2, v6.7.2.2, v6.7.3.1, v6.7.4.0}
+            flavour {alpine, debian} php-version {8.3}, template {https://github.com/shopware/shopware}, shopware-version {v6.7.0.1, v6.7.1.2, v6.7.2.2, v6.7.3.1, v6.7.4.2}
             flavour {alpine, debian} php-version {8.3}, template {https://github.com/shopware/shopware}, shopware-version {trunk}
 
     outputs:
