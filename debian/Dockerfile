@@ -39,7 +39,7 @@ RUN \
         if [ -f composer.lock ]; then \
             composer install --no-interaction -o; \
         else \
-            if echo "${SHOPWARE_VERSION}" | grep -qE '^v6\.6\.'; then \
+            if echo "${SHOPWARE_VERSION}" | grep -qE '^(6\.6\.x|v6\.6\.10.\.)'; then \
               jq '.conflict = (.conflict // {}) + { "squirrelphp/twig-php-syntax": "<1.11.0", "symfony/polyfill-php85": "<1.33.0" }' composer.json > composer.tmp.json && mv composer.tmp.json composer.json; \
             elif echo "${SHOPWARE_VERSION}" | grep -qE '^(trunk|v6\.7\.)'; then \
               jq '.conflict["symfony/type-info"] = "<7.1.8"' composer.json > composer.tmp.json && mv composer.tmp.json composer.json; \
