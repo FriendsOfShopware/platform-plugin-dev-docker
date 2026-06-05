@@ -24,9 +24,13 @@ RUN \
     git clone -b ${SHOPWARE_VERSION} --depth 1 "${TEMPLATE_REPOSITORY}" "${SHOPWARE_BUILD_DIR}" && \
     cd "${SHOPWARE_BUILD_DIR}" && \
         mkdir -p custom && \
+        if [ -f composer.lock ] && grep -q 'maltyxx/images-generator' composer.lock; then \
+            rm -f composer.lock; \
+        fi && \
         if [ -f composer.lock ]; then \
             composer install --no-interaction -o; \
         else \
+            jq '.replace["maltyxx/images-generator"] = "*"' composer.json > composer.tmp.json && mv composer.tmp.json composer.json && \
             if echo "${SHOPWARE_VERSION}" | grep -qE '^v6\.6\.10\.'; then \
               jq '.conflict = (.conflict // {}) + { "squirrelphp/twig-php-syntax": "<1.11.0" }' composer.json > composer.tmp.json && mv composer.tmp.json composer.json; \
             elif echo "${SHOPWARE_VERSION}" | grep -qE '^(trunk|v6\.7\.)'; then \
