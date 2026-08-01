@@ -22,9 +22,15 @@ RUN \
     npm install -g npm@^9.0.0; \
   fi
 
+# Playwright dropped Debian 11 (bullseye) support with 1.62, so the bullseye
+# based images (PHP 8.1 / Shopware 6.5) stay on the last version supporting it.
 RUN \
     node -v && \
-    npx playwright install --with-deps
+    if grep -q '^11\.' /etc/debian_version; then \
+        npx playwright@1.61.1 install --with-deps; \
+    else \
+        npx playwright install --with-deps; \
+    fi
 
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/shopware
 
