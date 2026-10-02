@@ -16,7 +16,7 @@ RUN \
       curl -fsSL https://deb.nodesource.com/setup_22.x | bash; \
   else \
       curl -fsSL https://deb.nodesource.com/setup_current.x | bash; \
-  fi; \
+  fi && \
   apt-get install nodejs && \
   if echo "${SHOPWARE_VERSION}" | grep -q '^v6.5.*'; then \
     npm install -g npm@^9.0.0; \
