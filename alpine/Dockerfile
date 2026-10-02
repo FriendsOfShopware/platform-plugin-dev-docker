@@ -1,19 +1,24 @@
-ARG PHP_VERSION=8.1
-FROM ghcr.io/friendsofshopware/platform-plugin-dev-base:${PHP_VERSION}-alpine
-
-ARG SHOPWARE_VERSION=dev-trunk
+# syntax=docker/dockerfile:1
+# The profile resolver supplies the published base image.
+ARG BASE_IMAGE=scratch
+FROM ${BASE_IMAGE} AS runtime
 
 ENV SHOPWARE_BUILD_DIR=/opt/shopware
 
-RUN \
-  if echo "${SHOPWARE_VERSION}" | grep -q '^v6.4.*'; then \
-      apk add --no-cache --repository="https://dl-cdn.alpinelinux.org/alpine/v3.16/main" 'nodejs=16.20.2-r0' 'npm=8.10.0-r0'; \
-  elif echo "${SHOPWARE_VERSION}" | grep -q '^v6.6.*'; then \
-      apk add --no-cache --repository="https://dl-cdn.alpinelinux.org/alpine/v3.19/main" 'nodejs=20.15.1-r0' 'npm=10.2.5-r0'; \
-  else \
-      apk add --no-cache npm; \
-  fi
+ARG DISTRIBUTION_VERSION
+ARG NODE_VERSION
+ARG NPM_VERSION
+ARG DEPENDENCY_REFRESH
+RUN apk add --no-cache \
+    --repository="https://dl-cdn.alpinelinux.org/alpine/v${DISTRIBUTION_VERSION}/main" \
+    --repository="https://dl-cdn.alpinelinux.org/alpine/v${DISTRIBUTION_VERSION}/community" \
+    "nodejs${NODE_VERSION:+=$NODE_VERSION}" "npm${NPM_VERSION:+=$NPM_VERSION}"
 
+FROM runtime AS shopware
+
+ARG SHOPWARE_VERSION=dev-trunk
+ARG SHOPWARE_SHA
+ARG DEPENDENCY_REFRESH
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/shopware
 
 RUN \
@@ -23,6 +28,10 @@ RUN \
     mkdir -p /opt/shopware && \
     git clone -b ${SHOPWARE_VERSION} --depth 1 "${TEMPLATE_REPOSITORY}" "${SHOPWARE_BUILD_DIR}" && \
     cd "${SHOPWARE_BUILD_DIR}" && \
+        if [ -n "${SHOPWARE_SHA}" ]; then \
+            git fetch --depth 1 origin "${SHOPWARE_SHA}" && \
+            git checkout --detach FETCH_HEAD; \
+        fi && \
         mkdir -p custom && \
         if [ -f composer.lock ] && grep -q 'maltyxx/images-generator' composer.lock; then \
             rm -f composer.lock; \

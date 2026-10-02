@@ -1,7 +1,7 @@
-ARG PHP_VERSION=8.1
-FROM ghcr.io/friendsofshopware/platform-plugin-dev-base:${PHP_VERSION}-debian
-
-ARG SHOPWARE_VERSION=dev-trunk
+# syntax=docker/dockerfile:1
+# The profile resolver supplies the published base image.
+ARG BASE_IMAGE=scratch
+FROM ${BASE_IMAGE} AS runtime
 
 ENV SHOPWARE_BUILD_DIR=/opt/shopware
 
@@ -17,33 +17,31 @@ RUN \
         rm -rf /var/lib/apt/lists/*; \
     fi
 
+ARG NODE_MAJOR
+ARG NODE_VERSION
+ARG NPM_VERSION
+ARG DEPENDENCY_REFRESH
 RUN \
-  if echo "${SHOPWARE_VERSION}" | grep -q '^v6.4.*'; then \
-      curl -fsSL https://deb.nodesource.com/setup_16.x | bash; \
-  elif echo "${SHOPWARE_VERSION}" | grep -q '^v6.5.*'; then \
-      curl -fsSL https://deb.nodesource.com/setup_18.x | bash; \
-  elif echo "${SHOPWARE_VERSION}" | grep -q '^v6.6.*'; then \
-      curl -fsSL https://deb.nodesource.com/setup_20.x | bash; \
-  elif echo "${SHOPWARE_VERSION}" | grep -q '^v6.7.*'; then \
-      curl -fsSL https://deb.nodesource.com/setup_22.x | bash; \
-  else \
-      curl -fsSL https://deb.nodesource.com/setup_current.x | bash; \
-  fi && \
-  apt-get install -y nodejs && \
-  if echo "${SHOPWARE_VERSION}" | grep -q '^v6.5.*'; then \
-    npm install -g npm@^9.0.0; \
-  fi
-
-# Playwright dropped Debian 11 (bullseye) support with 1.62, so the bullseye
-# based images (PHP 8.1 / Shopware 6.5) stay on the last version supporting it.
-RUN \
-    node -v && \
-    if grep -q '^11\.' /etc/debian_version; then \
-        npx playwright@1.61.1 install --with-deps; \
-    else \
-        npx playwright install --with-deps; \
+    curl -fsSL "https://deb.nodesource.com/setup_${NODE_MAJOR}.x" -o /tmp/nodesource-setup.sh && \
+    bash /tmp/nodesource-setup.sh && \
+    rm /tmp/nodesource-setup.sh && \
+    apt-get install -y "nodejs${NODE_VERSION:+=$NODE_VERSION}" && \
+    if [ -n "${NPM_VERSION}" ]; then \
+        npm install -g "npm@${NPM_VERSION}"; \
     fi
 
+# Install the Playwright release selected by the build profile.
+ARG PLAYWRIGHT_VERSION
+RUN node -v && \
+    if [ -n "${PLAYWRIGHT_VERSION}" ]; then \
+        npx --yes "playwright@${PLAYWRIGHT_VERSION}" install --with-deps; \
+    fi
+
+FROM runtime AS shopware
+
+ARG SHOPWARE_VERSION=dev-trunk
+ARG SHOPWARE_SHA
+ARG DEPENDENCY_REFRESH
 ARG TEMPLATE_REPOSITORY=https://github.com/shopware/shopware
 
 RUN \
@@ -53,6 +51,10 @@ RUN \
     mkdir -p /opt/shopware && \
     git clone -b ${SHOPWARE_VERSION} --depth 1 "${TEMPLATE_REPOSITORY}" "${SHOPWARE_BUILD_DIR}" && \
     cd "${SHOPWARE_BUILD_DIR}" && \
+        if [ -n "${SHOPWARE_SHA}" ]; then \
+            git fetch --depth 1 origin "${SHOPWARE_SHA}" && \
+            git checkout --detach FETCH_HEAD; \
+        fi && \
         mkdir -p custom && \
         if [ -f composer.lock ] && grep -q 'maltyxx/images-generator' composer.lock; then \
             rm -f composer.lock; \

@@ -1,9 +1,11 @@
 ARG PHP_VERSION
-ARG DISTRIBUTION_VERSION=3.19
+ARG DISTRIBUTION_VERSION
 FROM php:${PHP_VERSION}-cli-alpine${DISTRIBUTION_VERSION}
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
+# Refresh mutable package repositories and downloaded tools on the configured interval.
+ARG DEPENDENCY_REFRESH
 RUN \
     apk add --no-cache git zip unzip zlib-dev libpng-dev icu-dev libzip-dev bash jq \
         python3 make g++ && \

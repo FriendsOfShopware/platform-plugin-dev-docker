@@ -1,9 +1,11 @@
 ARG PHP_VERSION
-ARG DISTRIBUTION_VERSION=bullseye
+ARG DISTRIBUTION_VERSION
 FROM php:${PHP_VERSION}-cli-${DISTRIBUTION_VERSION}
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
+# Refresh mutable package repositories and downloaded tools on the configured interval.
+ARG DEPENDENCY_REFRESH
 RUN \
     if cat /etc/debian_version | grep -q '^11.*'; then \
         curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | bash -s -- --mariadb-server-version="mariadb-10.5.21"; \

@@ -1,0 +1,35 @@
+# Shared settings for CI and scripts/build.py local builds.
+# PHP 8.1 bases remain published and frozen because their distributions no longer rebuild reliably.
+
+[profiles."shopware-6.5"]
+php = "8.1"
+distribution = "bullseye"
+node = "18"
+npm = "9"
+# Later Playwright releases do not support Debian Bullseye.
+playwright = "1.61.1"
+frozen-base = true
+
+[profiles."shopware-6.6"]
+php = "8.3"
+distribution = "bookworm"
+node = "20"
+npm = "bundled"
+playwright = "latest"
+frozen-base = false
+
+[profiles."shopware-6.7"]
+php = "8.3"
+distribution = "bookworm"
+node = "22"
+npm = "bundled"
+playwright = "latest"
+frozen-base = false
+
+[profiles."trunk"]
+php = "8.3"
+distribution = "bookworm"
+node = "current"
+npm = "bundled"
+playwright = "latest"
+frozen-base = false

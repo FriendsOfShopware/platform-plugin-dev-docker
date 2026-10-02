@@ -1,0 +1,30 @@
+# Shared settings for CI and scripts/build.py local builds.
+# PHP 8.1 bases remain published and frozen because their distributions no longer rebuild reliably.
+
+[profiles."shopware-6.5"]
+php = "8.1"
+distribution = "3.16"
+node = "distribution"
+npm = "distribution"
+frozen-base = true
+
+[profiles."shopware-6.6"]
+php = "8.3"
+distribution = "3.19"
+node = "distribution"
+npm = "distribution"
+frozen-base = false
+
+[profiles."shopware-6.7"]
+php = "8.3"
+distribution = "3.19"
+node = "distribution"
+npm = "distribution"
+frozen-base = false
+
+[profiles."trunk"]
+php = "8.3"
+distribution = "3.19"
+node = "distribution"
+npm = "distribution"
+frozen-base = false

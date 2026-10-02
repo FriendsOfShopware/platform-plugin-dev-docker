@@ -32,20 +32,50 @@ If the environment variable `SHOPWARE_ROOT` is set, this will be used as alterna
 
 Make sure that the app folder is present in `${SHOPWARE_ROOT}/custom/apps/`. If you use the default `SHOPWARE_ROOT` you can place them in `/apps`.
 
-# Build Docker image for specific Shopware version
+# Build Docker image for a specific Shopware version
 
-It is possible to specify the Shopware version or even the template with the Docker option `--build-arg`, e.g.:
-```
-docker build --build-arg SHOPWARE_VERSION=trunk . -t platform-plugin-dev:trunk
+The hand-maintained [Alpine profiles](alpine/build-profiles.toml) and [Debian profiles](debian/build-profiles.toml) declare the PHP version, distribution, Node.js and npm policies, Playwright policy and whether the base is frozen. CI and local builds read these same files. The workflow selects a profile and lists the Shopware releases to build with it.
+
+Local builds require Python 3.11 or later and Docker with Buildx. For example:
+
+```sh
+python3 scripts/build.py build \
+    --flavour debian --profile shopware-6.5 \
+    --shopware-version v6.5.0.0 \
+    --tag platform-plugin-dev:6.5-debian
 ```
 
-In the same way it is also possible to specify the template Git repository URL:
-```
-docker build --build-arg SHOPWARE_VERSION=trunk \
-    --build-arg TEMPLATE_REPOSITORY='https://github.com/FriendsOfShopware/platform' \
-    . -t platform-plugin-dev:trunk
+To build from another template repository, add `--template https://github.com/FriendsOfShopware/platform`. Use `--dry-run` to resolve the upstream versions and print the Docker command without building. `--force-refresh` invalidates mutable dependency layers immediately.
+
+Profiles are named `shopware-6.5`, `shopware-6.6`, `shopware-6.7` and `trunk`. Their version policies mean:
+
+- A Node.js major such as `"18"` selects the latest available NodeSource package for that major; `"current"` selects the current Node.js major.
+- `"distribution"` selects Node.js or npm from the profile's Alpine repositories.
+- An npm major such as `"9"` selects its latest stable release; `"bundled"` keeps the npm included with Node.js.
+- Playwright accepts an exact version or `"latest"`. Omitting it disables its installation, as in the Alpine profiles.
+- `frozen-base = true` reuses the published base and excludes it from CI base builds.
+
+A new PHP version or distribution is configured in these files. The resolver reads the profile and passes exact package versions, a pinned base digest and the Shopware commit as Docker build arguments.
+
+# Nightly builds and dependency updates
+
+Nightly builds resolve each Shopware branch or tag to a commit, pin the published PHP base by digest, and check the available Node.js, npm and Playwright versions. Builds on `main` reuse published images when their input fingerprint matches. A changed upstream commit, runtime version, base digest or Dockerfile triggers a rebuild.
+
+The `runtime` stage installs Node.js, npm and, on Debian, Playwright. CI builds it once per PHP, distribution and Node.js variant, then shares it across the Shopware versions. Published runtimes use `runtime-*` tags in the `platform-plugin-dev-base` repository. Branch builds use the same stage through the shared GitHub Actions cache and keep the existing rules for publishing images.
+
+Mutable APT/APK dependencies, downloaded tools and Composer dependencies without a usable lock file refresh weekly, at the start of each UTC ISO week. To refresh sooner, run the **Build Docker images** workflow manually with **force-refresh** enabled. PHP 8.1 bases remain frozen, and Debian Bullseye uses the archived package snapshot configured in its Dockerfile.
+
+The workflow stores resolved inputs in its `build-plan` and `runtime-*` artifacts. Runtime image labels record the dependency versions and refresh period; final image labels record the Shopware commit and input fingerprint. Runtime caches retain intermediate layers, while each Shopware cache retains its final layers.
+
+To build only the shared runtime locally:
+
+```sh
+python3 scripts/build.py build \
+    --flavour debian --profile shopware-6.6 \
+    --target runtime --tag platform-plugin-dev:runtime-6.6-debian
 ```
 
+Use `--target base` for a profile whose base is not frozen. It builds the base locally; runtime and Shopware builds continue to resolve the published base used by CI. Direct Docker builds also remain possible when supplying the required build arguments explicitly.
 
 # Examples
 ## Pack Plugin in .gitlab-ci.yml

@@ -3,32 +3,47 @@ name: Build Docker images
 on:
   push:
   workflow_dispatch:
+    inputs:
+      force-refresh:
+        description: Refresh mutable dependencies before the next weekly refresh
+        type: boolean
+        default: false
   schedule:
     - cron: '0 1 * * *'
 
 env:
   DOCKER_REPOSITORY: ghcr.io/friendsofshopware/platform-plugin-dev
-  CACHE_KEY: "2020-09-22"
+  CACHE_KEY: inputs-v1
 
 jobs:
-  build-base:
+  prepare-matrices:
     runs-on: ubuntu-latest
+    outputs:
+      base-matrix: ${{ steps.profiles.outputs.base-matrix }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Test build input tracking
+        run: python3 scripts/test_build.py
+      - name: Read base profiles
+        id: profiles
+        run: python3 scripts/build.py profiles
 
+  build-base:
+    needs: prepare-matrices
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          # PHP 8.1 images reuse the published bases because their old distributions no longer rebuild reliably.
-          - php-version: "8.3"
-            flavour: alpine
-            distribution-version: "3.19"
-          - php-version: "8.3"
-            flavour: debian
-            distribution-version: bookworm
+      matrix: ${{ fromJson(needs.prepare-matrices.outputs.base-matrix) }}
 
     steps:
       - name: Clone
         uses: actions/checkout@v7
+
+      - name: Select dependency refresh
+        id: refresh
+        env:
+          FORCE_REFRESH: ${{ inputs.force-refresh || false }}
+        run: python3 scripts/build.py refresh
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -51,7 +66,7 @@ jobs:
             exit 0
           fi
 
-          echo "push=1" >> $GITHUB_OUTPUT
+          echo "push=1" >> "$GITHUB_OUTPUT"
 
       - name: Login to GitHub Docker Registry
         uses: docker/login-action@v4
@@ -65,11 +80,15 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           build-args: |
+            DEPENDENCY_REFRESH=${{ steps.refresh.outputs.refresh }}
             PHP_VERSION=${{ matrix.php-version }}
             FLAVOUR=${{ matrix.flavour }}
             DISTRIBUTION_VERSION=${{ matrix.distribution-version }}
           tags: "${{ env.DOCKER_REPOSITORY }}-base:${{ matrix.php-version }}-${{ matrix.flavour }}"
           file: "${{ matrix.flavour }}/Dockerfile.base"
+          pull: true
+          # Attestation timestamps would change the digest of an otherwise cached base.
+          provenance: false
           push: ${{ steps.check-push.outputs.push == '1' }}
           cache-from: type=gha,scope=${{ env.CACHE_KEY }}-${{ matrix.php-version }}-${{ matrix.flavour }}
           cache-to: type=gha,mode=max,scope=${{ env.CACHE_KEY }}-${{ matrix.php-version }}-${{ matrix.flavour }}
@@ -78,39 +97,150 @@ jobs:
             org.opencontainers.image.description=${{ github.event.repository.description }}
             org.opencontainers.image.url=${{ github.event.repository.html_url }}
             org.opencontainers.image.source=${{ github.event.repository.clone_url }}
-            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
-            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
-
 
   generate-matrix:
     needs: build-base
     runs-on: ubuntu-latest
-
+    outputs:
+      runtime-matrix: ${{ steps.plan.outputs.runtime-matrix }}
     steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
       - name: Create matrix
         id: create_matrix
         uses: fabiocaccamo/create-matrix-action@v7
         with:
           matrix: |
-            flavour {alpine, debian} php-version {8.1}, template {https://github.com/shopware/shopware}, shopware-version {6.5.x, v6.5.0.0, v6.5.1.1, v6.5.2.1, v6.5.3.3, v6.5.4.1, v6.5.5.2, v6.5.6.1, v6.5.7.4, v6.5.8.19}
-            flavour {alpine, debian} php-version {8.3}, template {https://github.com/shopware/shopware}, shopware-version {6.6.x, v6.6.0.3, v6.6.1.2, v6.6.2.0, v6.6.3.1, v6.6.4.1, v6.6.5.1, v6.6.6.1, v6.6.7.1, v6.6.8.2, v6.6.9.0, v6.6.10.28}
-            flavour {alpine, debian} php-version {8.3}, template {https://github.com/shopware/shopware}, shopware-version {v6.7.0.1, v6.7.1.2, v6.7.2.2, v6.7.3.1, v6.7.4.2, v6.7.5.1, v6.7.6.2, v6.7.7.1, v6.7.8.2, v6.7.9.1, v6.7.10.2, v6.7.11.1, v6.7.12.2, v6.7.13.1, v6.7.14.2, v6.7.15.0}
-            flavour {alpine, debian} php-version {8.3}, template {https://github.com/shopware/shopware}, shopware-version {trunk}
+            flavour {alpine, debian} profile {shopware-6.5}, template {https://github.com/shopware/shopware}, shopware-version {6.5.x, v6.5.0.0, v6.5.1.1, v6.5.2.1, v6.5.3.3, v6.5.4.1, v6.5.5.2, v6.5.6.1, v6.5.7.4, v6.5.8.19}
+            flavour {alpine, debian} profile {shopware-6.6}, template {https://github.com/shopware/shopware}, shopware-version {6.6.x, v6.6.0.3, v6.6.1.2, v6.6.2.0, v6.6.3.1, v6.6.4.1, v6.6.5.1, v6.6.6.1, v6.6.7.1, v6.6.8.2, v6.6.9.0, v6.6.10.28}
+            flavour {alpine, debian} profile {shopware-6.7}, template {https://github.com/shopware/shopware}, shopware-version {v6.7.0.1, v6.7.1.2, v6.7.2.2, v6.7.3.1, v6.7.4.2, v6.7.5.1, v6.7.6.2, v6.7.7.1, v6.7.8.2, v6.7.9.1, v6.7.10.2, v6.7.11.1, v6.7.12.2, v6.7.13.1, v6.7.14.2, v6.7.15.0}
+            flavour {alpine, debian} profile {trunk}, template {https://github.com/shopware/shopware}, shopware-version {trunk}
 
+      - name: Resolve upstream versions and digests
+        id: plan
+        env:
+          MATRIX: ${{ steps.create_matrix.outputs.matrix }}
+          FORCE_REFRESH: ${{ inputs.force-refresh || false }}
+        run: python3 scripts/build.py plan
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: build-plan
+          path: build-plan.json
+          retention-days: 7
+
+  build-runtime:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.runtime-matrix) }}
+    env:
+      IMAGE: ghcr.io/friendsofshopware/platform-plugin-dev-base:runtime-${{ matrix.runtime-id }}
+      BUILD_INPUTS: ${{ toJson(matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - name: Check for push
+        id: check-push
+        run: |
+          if [ "${{ secrets.DOCKER_USERNAME }}" == "" ] || [ "${{ secrets.DOCKER_PASSWORD }}" == "" ]; then
+            echo "No Docker credentials found, skipping push."
+            exit 0
+          fi
+
+          if [ "${{ github.event_name == 'pull_request' }}" == "true" ]; then
+            echo "Pull request, skipping push."
+            exit 0
+          fi
+
+          if [ "${{ github.ref }}" != "refs/heads/main" ]; then
+            echo "Not on main branch, skipping push."
+            exit 0
+          fi
+
+          echo "push=1" >> "$GITHUB_OUTPUT"
+
+      - name: Login to GitHub Docker Registry
+        uses: docker/login-action@v4
+        if: ${{ steps.check-push.outputs.push == '1' }}
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check published runtime inputs
+        id: inputs
+        run: python3 scripts/build.py check-image
+
+      - name: Build shared runtime
+        id: build
+        if: steps.inputs.outputs.build == 'true'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ${{ matrix.flavour }}/Dockerfile
+          target: runtime
+          build-args: |
+            BASE_IMAGE=${{ matrix.base-image }}
+            DISTRIBUTION_VERSION=${{ matrix.distribution }}
+            NODE_MAJOR=${{ matrix.node-major }}
+            NODE_VERSION=${{ matrix.node-version }}
+            NPM_VERSION=${{ matrix.npm-version }}
+            PLAYWRIGHT_VERSION=${{ matrix.playwright-version }}
+            DEPENDENCY_REFRESH=${{ matrix.refresh }}
+          tags: ${{ env.IMAGE }}
+          push: ${{ steps.check-push.outputs.push == '1' }}
+          cache-from: type=gha,scope=${{ env.CACHE_KEY }}-runtime-${{ matrix.runtime-id }}
+          cache-to: type=gha,mode=max,scope=${{ env.CACHE_KEY }}-runtime-${{ matrix.runtime-id }}
+          labels: |
+            io.friendsofshopware.build-inputs=${{ matrix.fingerprint }}
+            io.friendsofshopware.node-version=${{ matrix.node-version }}
+            io.friendsofshopware.npm-version=${{ matrix.npm-version }}
+            io.friendsofshopware.playwright-version=${{ matrix.playwright-version }}
+            io.friendsofshopware.dependency-refresh=${{ matrix.refresh }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Record runtime reference
+        env:
+          REUSED_IMAGE: ${{ steps.inputs.outputs.image }}
+          PUSH: ${{ steps.check-push.outputs.push == '1' }}
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: python3 scripts/build.py complete-runtime
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: runtime-${{ matrix.runtime-id }}
+          path: runtime-${{ matrix.runtime-id }}.json
+          retention-days: 7
+
+  prepare-builds:
+    needs: [generate-matrix, build-runtime]
+    runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.create_matrix.outputs.matrix }}
-
+      matrix: ${{ steps.merge.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: build-plan
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: runtime-*
+          merge-multiple: true
+      - name: Attach shared runtimes to the Shopware matrix
+        id: merge
+        run: python3 scripts/build.py merge
 
   build:
-    needs: generate-matrix
+    needs: prepare-builds
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.prepare-builds.outputs.matrix) }}
 
     steps:
       - name: Clone
@@ -136,7 +266,8 @@ jobs:
           echo "Shopware version ${{ matrix.shopware-version }}"
           echo "Image Tag: ${tag}"
 
-          echo "tag=${tag}" >> $GITHUB_OUTPUT
+          echo "image=${tag%%,*}" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -159,7 +290,7 @@ jobs:
             exit 0
           fi
 
-          echo "push=1" >> $GITHUB_OUTPUT
+          echo "push=1" >> "$GITHUB_OUTPUT"
 
       - name: Login to GitHub Docker Registry
         uses: docker/login-action@v4
@@ -169,25 +300,46 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check published Shopware inputs
+        id: inputs
+        env:
+          IMAGE: ${{ steps.get-docker-tag.outputs.image }}
+          BUILD_INPUTS: ${{ toJson(matrix) }}
+        run: python3 scripts/build.py check-image
+
       - name: Build docker image
+        if: steps.inputs.outputs.build == 'true'
         uses: docker/build-push-action@v7
         with:
+          context: .
+          target: shopware
+          build-contexts: ${{ matrix.runtime-image != '' && format('runtime=docker-image://{0}', matrix.runtime-image) || '' }}
           build-args: |
+            BASE_IMAGE=${{ matrix.base-image }}
+            SHOPWARE_SHA=${{ matrix.shopware-sha }}
+            DISTRIBUTION_VERSION=${{ matrix.distribution }}
+            NODE_MAJOR=${{ matrix.node-major }}
+            NODE_VERSION=${{ matrix.node-version }}
+            NPM_VERSION=${{ matrix.npm-version }}
+            PLAYWRIGHT_VERSION=${{ matrix.playwright-version }}
+            DEPENDENCY_REFRESH=${{ matrix.refresh }}
             SHOPWARE_VERSION=${{ matrix.shopware-version }}
-            PHP_VERSION=${{ matrix.php-version }}
             TEMPLATE_REPOSITORY=${{ matrix.template }}
             FLAVOUR=${{ matrix.flavour }}
           tags: ${{ steps.get-docker-tag.outputs.tag }}
           file: "${{ matrix.flavour }}/Dockerfile"
           push: ${{ steps.check-push.outputs.push == '1' }}
-          cache-from: type=gha,scope=${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}-${{ matrix.flavour }}
-          cache-to: type=gha,mode=max,scope=${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}-${{ matrix.flavour }}
+          cache-from: |
+            type=gha,scope=${{ env.CACHE_KEY }}-runtime-${{ matrix.runtime-id }}
+            type=gha,scope=${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}-${{ matrix.flavour }}
+          cache-to: type=gha,mode=min,scope=${{ env.CACHE_KEY }}-${{ matrix.shopware-version }}-${{ matrix.flavour }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}
             org.opencontainers.image.url=${{ github.event.repository.html_url }}
             org.opencontainers.image.source=${{ github.event.repository.clone_url }}
-            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
-            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
+            io.friendsofshopware.build-inputs=${{ matrix.fingerprint }}
+            org.opencontainers.image.version=${{ matrix.shopware-version }}
+            org.opencontainers.image.source-revision=${{ matrix.shopware-sha }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
