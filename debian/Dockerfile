@@ -5,6 +5,18 @@ ARG SHOPWARE_VERSION=dev-trunk
 
 ENV SHOPWARE_BUILD_DIR=/opt/shopware
 
+# Keep Bullseye package indexes and downloads on the same archived snapshot.
+RUN \
+    if grep -q '^11\.' /etc/debian_version; then \
+        printf '%s\n' \
+            'deb [check-valid-until=no] https://snapshot.debian.org/archive/debian/20260830T000000Z/ bullseye main' \
+            'deb [check-valid-until=no] https://snapshot.debian.org/archive/debian/20260830T000000Z/ bullseye-updates main' \
+            'deb [check-valid-until=no] https://snapshot.debian.org/archive/debian-security/20260830T000000Z/ bullseye-security main' \
+            > /etc/apt/sources.list && \
+        rm -f /etc/apt/sources.list.d/debian.sources && \
+        rm -rf /var/lib/apt/lists/*; \
+    fi
+
 RUN \
   if echo "${SHOPWARE_VERSION}" | grep -q '^v6.4.*'; then \
       curl -fsSL https://deb.nodesource.com/setup_16.x | bash; \
