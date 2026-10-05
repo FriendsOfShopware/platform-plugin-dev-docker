@@ -192,6 +192,7 @@ jobs:
             PLAYWRIGHT_VERSION=${{ matrix.playwright-version }}
             DEPENDENCY_REFRESH=${{ matrix.refresh }}
           tags: ${{ env.IMAGE }}
+          provenance: false
           push: ${{ steps.check-push.outputs.push == '1' }}
           cache-from: type=gha,scope=${{ env.CACHE_KEY }}-runtime-${{ matrix.runtime-id }}
           cache-to: type=gha,mode=max,scope=${{ env.CACHE_KEY }}-runtime-${{ matrix.runtime-id }}
@@ -328,6 +329,7 @@ jobs:
             FLAVOUR=${{ matrix.flavour }}
           tags: ${{ steps.get-docker-tag.outputs.tag }}
           file: "${{ matrix.flavour }}/Dockerfile"
+          provenance: false
           push: ${{ steps.check-push.outputs.push == '1' }}
           cache-from: |
             type=gha,scope=${{ env.CACHE_KEY }}-runtime-${{ matrix.runtime-id }}
