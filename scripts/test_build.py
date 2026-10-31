@@ -144,10 +144,18 @@ class BuildInputsTest(unittest.TestCase):
             self.assertEqual(build.npm_version('npm', 9), '9.10.0')
 
     def test_nodesource_selects_newest_node_and_packaging_revision(self):
-        versions = ['22.9.0-1nodesource1', '22.10.0-1nodesource1', '22.10.0-2nodesource1']
+        versions = ['22.9.0-1nodesource1', '22.10.0-1nodesource1', '22.10.0-2nodesource1',
+                    '27.0.0~alpha.0.0.0-1nodesource1', '22.11.0~rc.1-1nodesource1',
+                    '23.0.0-1nodesource1', '22.10.0-2nodesource1~preview']
         data = '\n\n'.join(f'Package: nodejs\nVersion: {v}' for v in versions)
         with patch.object(build, 'download', return_value=gzip.compress(data.encode())):
-            self.assertEqual(build.nodesource_version('22'), versions[-1])
+            self.assertEqual(build.nodesource_version('22'), '22.10.0-2nodesource1')
+
+    def test_nodesource_reports_when_only_prereleases_exist(self):
+        data = b'Package: nodejs\nVersion: 27.0.0~alpha.0.0.0-1nodesource1'
+        with patch.object(build, 'download', return_value=gzip.compress(data)):
+            with self.assertRaisesRegex(ValueError, 'No stable Node.js 27 packages found'):
+                build.nodesource_version('27')
 
     def test_merge_tracks_source_and_runtime_independently(self):
         with tempfile.TemporaryDirectory() as directory:

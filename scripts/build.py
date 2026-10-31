@@ -97,17 +97,37 @@ def nodesource_version(major):
     versions = []
     for paragraph in packages.split("\n\n"):
         fields = dict(line.split(": ", 1) for line in paragraph.splitlines() if ": " in line)
-        if fields.get("Package") == "nodejs":
-            versions.append(fields["Version"])
+        version = fields.get("Version", "")
+        # A stable Node upstream version has exactly three numeric components.
+        # Ignore prereleases and packages for other majors in the same index.
+        if (fields.get("Package") == "nodejs" and
+                re.fullmatch(rf"{re.escape(str(major))}\.\d+\.\d+(?:-[^-]+)?", version)):
+            versions.append(version)
     if not versions:
-        raise ValueError(f"No Node.js {major} packages found")
-    def version_key(version):
-        # NodeSource publishes stable Node versions with a numeric packaging revision.
-        match = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)-(\d+)nodesource(\d+)", version)
-        if match is None:
-            raise ValueError(f"Unexpected NodeSource version: {version}")
-        return tuple(map(int, match.groups()))
-    return max(versions, key=version_key)
+        raise ValueError(f"No stable Node.js {major} packages found")
+    def compare_versions(left, right):
+        # Debian compares alternating non-digit and numeric runs; tilde sorts
+        # before even the end of a string, and letters before punctuation.
+        def order(char):
+            return -1 if char == "~" else 0 if not char else ord(char) if char.isalpha() else ord(char) + 256
+        def compare_part(a, b):
+            while a or b:
+                while (a and not a[0].isdigit()) or (b and not b[0].isdigit()):
+                    ac = a[0] if a and not a[0].isdigit() else ""
+                    bc = b[0] if b and not b[0].isdigit() else ""
+                    if order(ac) != order(bc):
+                        return (order(ac) > order(bc)) - (order(ac) < order(bc))
+                    a, b = a[len(ac):], b[len(bc):]
+                an = re.match(r"\d*", a).group()
+                bn = re.match(r"\d*", b).group()
+                if int(an or 0) != int(bn or 0):
+                    return (int(an or 0) > int(bn or 0)) - (int(an or 0) < int(bn or 0))
+                a, b = a[len(an):], b[len(bn):]
+            return 0
+        lu, _, lr = left.partition("-")
+        ru, _, rr = right.partition("-")
+        return compare_part(lu, ru) or compare_part(lr or "0", rr or "0")
+    return max(versions, key=functools.cmp_to_key(compare_versions))
 
 
 @functools.lru_cache(maxsize=None)
