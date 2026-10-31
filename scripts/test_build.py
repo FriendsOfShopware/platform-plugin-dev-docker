@@ -157,6 +157,20 @@ class BuildInputsTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'No stable Node.js 27 packages found'):
                 build.nodesource_version('27')
 
+    def test_current_node_falls_back_until_nodesource_has_stable_package(self):
+        releases = [{'version': v} for v in ['v27.0.0', 'v28.0.0-rc.1', 'v26.1.0', 'v26.0.0']]
+        entry = {'profile': 'custom', 'flavour': 'debian'}
+        profile = {'php': '8.3', 'distribution': 'bookworm', 'node': 'current', 'npm': 'bundled'}
+        with patch.dict(os.environ, DOCKER_REPOSITORY='repo'), \
+             patch.object(build, 'profile_inputs', return_value=profile), \
+             patch.object(build, 'pinned_image', return_value='base@sha256:abc'), \
+             patch.object(build, 'download', return_value=json.dumps(releases).encode()), \
+             patch.object(build, 'nodesource_version', side_effect=[build.NoStableNodePackage('missing'), '26.1.0-1nodesource1']) as resolve:
+            result = build.runtime_inputs(entry, 'refresh')
+        self.assertEqual(result['node-major'], '26')
+        self.assertEqual(result['node-version'], '26.1.0-1nodesource1')
+        self.assertEqual([call.args[0] for call in resolve.call_args_list], ['27', '26'])
+
     def test_merge_tracks_source_and_runtime_independently(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

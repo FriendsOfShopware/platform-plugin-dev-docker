@@ -16,10 +16,15 @@ import subprocess
 import tarfile
 import tomllib
 import urllib.request
+import urllib.error
 
 
 ROOT = Path(__file__).resolve().parents[1]
 LABEL = "io.friendsofshopware.build-inputs"
+
+
+class NoStableNodePackage(ValueError):
+    pass
 
 
 def fingerprint(value):
@@ -93,7 +98,12 @@ def npm_version(package, major=None):
 @functools.lru_cache(maxsize=None)
 def nodesource_version(major):
     url = f"https://deb.nodesource.com/node_{major}.x/dists/nodistro/main/binary-amd64/Packages.gz"
-    packages = gzip.decompress(download(url)).decode()
+    try:
+        packages = gzip.decompress(download(url)).decode()
+    except urllib.error.HTTPError as error:
+        if error.code == 404:
+            raise NoStableNodePackage(f"No NodeSource repository for Node.js {major}") from error
+        raise
     versions = []
     for paragraph in packages.split("\n\n"):
         fields = dict(line.split(": ", 1) for line in paragraph.splitlines() if ": " in line)
@@ -104,7 +114,7 @@ def nodesource_version(major):
                 re.fullmatch(rf"{re.escape(str(major))}\.\d+\.\d+(?:-[^-]+)?", version)):
             versions.append(version)
     if not versions:
-        raise ValueError(f"No stable Node.js {major} packages found")
+        raise NoStableNodePackage(f"No stable Node.js {major} packages found")
     def compare_versions(left, right):
         # Debian compares alternating non-digit and numeric runs; tilde sorts
         # before even the end of a string, and letters before punctuation.
@@ -198,8 +208,20 @@ def runtime_inputs(entry, refresh):
         major = profile["node"]
         if major == "current":
             releases = json.loads(download("https://nodejs.org/dist/index.json"))
-            major = releases[0]["version"].lstrip("v").split(".")[0]
-        spec["node-version"] = nodesource_version(major)
+            majors = sorted({int(match.group(1)) for release in releases
+                             if (match := re.fullmatch(r"v(\d+)\.\d+\.\d+", release["version"]))},
+                            reverse=True)
+            for candidate in majors:
+                try:
+                    spec["node-version"] = nodesource_version(str(candidate))
+                    major = str(candidate)
+                    break
+                except NoStableNodePackage:
+                    continue
+            else:
+                raise ValueError("No stable NodeSource package found for any Node.js release")
+        else:
+            spec["node-version"] = nodesource_version(major)
     if profile["npm"] == "distribution":
         spec["npm-version"] = packages["npm"]
     elif profile["npm"] != "bundled":

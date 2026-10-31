@@ -49,7 +49,7 @@ To build from another template repository, add `--template https://github.com/Fr
 
 Profiles are named `shopware-6.5`, `shopware-6.6`, `shopware-6.7` and `trunk`. Their version policies mean:
 
-- A Node.js major such as `"18"` selects the latest available NodeSource package for that major; `"current"` selects the current Node.js major.
+- A Node.js major such as `"18"` selects the latest stable NodeSource package for that major; `"current"` selects the newest stable Node.js major available from NodeSource.
 - `"distribution"` selects Node.js or npm from the profile's Alpine repositories.
 - An npm major such as `"9"` selects its latest stable release; `"bundled"` keeps the npm included with Node.js.
 - Playwright accepts an exact version or `"latest"`. Omitting it disables its installation, as in the Alpine profiles.
