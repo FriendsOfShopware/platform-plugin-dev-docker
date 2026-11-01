@@ -59,7 +59,7 @@ A new PHP version or distribution is configured in these files. The resolver rea
 
 # Nightly builds and dependency updates
 
-Nightly builds resolve each Shopware branch or tag to a commit, pin the published PHP base by digest, and check the available Node.js, npm and Playwright versions. Builds on `main` reuse published images when their input fingerprint matches. A changed upstream commit, runtime version, base digest or Dockerfile triggers a rebuild.
+Nightly builds resolve each Shopware branch or tag to a commit, pin the published PHP base by digest, and check the available Node.js, npm and Playwright versions. Builds on `main` reuse published images when their input fingerprint matches. A changed upstream commit, runtime version, base digest, Dockerfile or file in `rootfs/` triggers a rebuild. Runtime images copy the current `rootfs/` files, including when using a frozen PHP base.
 
 The `runtime` stage installs Node.js, npm and, on Debian, Playwright. CI builds it once per PHP, distribution and Node.js variant, then shares it across the Shopware versions. Published runtimes use `runtime-*` tags in the `platform-plugin-dev-base` repository. Branch builds use the same stage through the shared GitHub Actions cache and keep the existing rules for publishing images.
 

@@ -31,6 +31,18 @@ def fingerprint(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()
 
 
+def rootfs_fingerprint():
+    files = {}
+    for path in sorted((ROOT / "rootfs").rglob("*")):
+        name = path.relative_to(ROOT).as_posix()
+        if path.is_symlink():
+            files[name] = {"link": os.readlink(path)}
+        elif path.is_file():
+            files[name] = {"content": hashlib.sha256(path.read_bytes()).hexdigest(),
+                           "mode": path.stat().st_mode & 0o777}
+    return fingerprint(files)
+
+
 def output(name, value):
     with open(os.environ["GITHUB_OUTPUT"], "a") as stream:
         stream.write(f"{name}={value}\n")
@@ -231,8 +243,9 @@ def runtime_inputs(entry, refresh):
         spec["playwright-version"] = npm_version("playwright") if playwright == "latest" else playwright
     spec["node-major"] = major
     spec["runtime-id"] = f"{php}-{flavour}-node{major}"
-    dockerfile = Path(flavour, "Dockerfile").read_text().split("FROM runtime AS shopware", 1)[0]
+    dockerfile = (ROOT / flavour / "Dockerfile").read_text().split("FROM runtime AS shopware", 1)[0]
     spec["recipe"] = hashlib.sha256(dockerfile.encode()).hexdigest()
+    spec["rootfs"] = rootfs_fingerprint()
     spec["fingerprint"] = fingerprint(spec)
     return spec
 

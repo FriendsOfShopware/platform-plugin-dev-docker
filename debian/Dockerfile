@@ -37,6 +37,9 @@ RUN node -v && \
         npx --yes "playwright@${PLAYWRIGHT_VERSION}" install --with-deps; \
     fi
 
+# Apply current scripts even when the PHP base is frozen.
+COPY rootfs/ /
+
 FROM runtime AS shopware
 
 ARG SHOPWARE_VERSION=dev-trunk

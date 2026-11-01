@@ -92,10 +92,48 @@ class BuildInputsTest(unittest.TestCase):
         self.assertEqual({(e["flavour"], e["php-version"], e["distribution-version"]) for e in matrix},
                          {("alpine", "8.3", "3.19"), ("debian", "8.3", "bookworm")})
 
+    def test_rootfs_changes_rebuild_runtimes_using_frozen_bases(self):
+        for flavour in ('alpine', 'debian'):
+            with self.subTest(flavour=flavour), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / flavour).mkdir()
+                for name in ('Dockerfile', 'build-profiles.toml'):
+                    (root / flavour / name).write_bytes((build.ROOT / flavour / name).read_bytes())
+                scripts = root / 'rootfs/opt/bin'
+                scripts.mkdir(parents=True)
+                script = scripts / 'pack-plugin'
+                script.write_text('old command')
+                entry = {'flavour': flavour, 'profile': 'shopware-6.5'}
+                with patch.object(build, 'ROOT', root), \
+                     patch.dict(os.environ, DOCKER_REPOSITORY='repo'), \
+                     patch.object(build, 'pinned_image', return_value='frozen@sha256:abc'), \
+                     patch.object(build, 'alpine_versions', return_value={'nodejs': '16.20.2-r0', 'npm': '8.10.0-r0'}), \
+                     patch.object(build, 'nodesource_version', return_value='18.20.8-1nodesource1'), \
+                     patch.object(build, 'npm_version', return_value='9.9.4'):
+                    def resolved():
+                        return build.runtime_inputs(entry, '2026-W40')['fingerprint']
+                    first = resolved()
+                    self.assertEqual(first, resolved())
+                    script.write_text('corrected command')
+                    changed = resolved()
+                    self.assertNotEqual(first, changed)
+                    script.chmod(script.stat().st_mode ^ 0o111)
+                    self.assertNotEqual(changed, resolved())
+                    changed = resolved()
+                    script.rename(scripts / 'pack-app')
+                    self.assertNotEqual(changed, resolved())
+                    script = scripts / 'pack-app'
+                    changed = resolved()
+                    script.unlink()
+                    self.assertNotEqual(changed, resolved())
+                recipe = (root / flavour / 'Dockerfile').read_text().split('FROM runtime AS shopware', 1)[0]
+                self.assertIn('COPY rootfs/ /', recipe)
+
     def test_new_php_and_distribution_need_only_profile_changes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'alpine').mkdir()
+            (root / 'alpine/Dockerfile').write_text('FROM base AS runtime\nFROM runtime AS shopware\n')
             (root / 'alpine/build-profiles.toml').write_text(
                 '[profiles.custom]\nphp = "8.4"\ndistribution = "3.23"\n'
                 'node = "distribution"\nnpm = "distribution"\nfrozen-base = false\n')

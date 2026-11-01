@@ -14,6 +14,9 @@ RUN apk add --no-cache \
     --repository="https://dl-cdn.alpinelinux.org/alpine/v${DISTRIBUTION_VERSION}/community" \
     "nodejs${NODE_VERSION:+=$NODE_VERSION}" "npm${NPM_VERSION:+=$NPM_VERSION}"
 
+# Apply current scripts even when the PHP base is frozen.
+COPY rootfs/ /
+
 FROM runtime AS shopware
 
 ARG SHOPWARE_VERSION=dev-trunk
